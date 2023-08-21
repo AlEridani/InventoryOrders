@@ -30,14 +30,17 @@ public class PurchaseDAOImple implements PurchaseDAO {
 			+ COL_ORDER_NUMBER_SQE + ", ?, ?, ?, ?)";
 
 	// 나중에 수정하기
-	private static final String purchaseSelect = "SELECT p.ORDER_DATE, a.AP_ID, a.AP_NAME, a.AP_MFR,p.ORDER_QUANTITY, p.ORDER_PRICE, p.ORDER_NUMBER"
-			+ " FROM APPLIANCE a join PURCHASE p" + " ON a.AP_ID = p.AP_ID " + " WHERE p.MEMBER_ID = ?"
-			+ " ORDER BY p.ORDER_NUMBER";
+	private static final String purchaseSelect = "SELECT p." + COL_DATE +
+													  ", a." + COL_APID +
+													  ", a." + COL_AP_NAME +
+													  ", a." + COL_AP_MFR +
+													  ", p." + COL_ORDER_QUANTITY +
+													  ", p." + COL_ORDER_PRICE +
+													  ", p." + COL_ORDER_NUMBER + 
+													  " FROM APPLIANCE a join " + TABLE_NAME + " p"+ " ON a." + COL_APID + " = p." + COL_APID + 
+													  " WHERE p." + COL_SESSION_ID + " = ?";
 
-//	select p.order_date, a.ap_id, a.ap_name, a.ap_mfr,p.order_quantity, p.order_price, p.order_number
-//	from appliance a join purchase p
-//	on a.ap_id = p.ap_id
-//	where p.member_id = 
+
 
 	private static PurchaseDAOImple instance = null;
 

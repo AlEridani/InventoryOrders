@@ -19,6 +19,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTextField;
+import java.awt.Font;
 
 public class SideMain {
 
@@ -39,6 +41,8 @@ public class SideMain {
 
 	private static SideMain instance = null;
 	private JButton btnAppInsert;
+	private JTextField textSerch;
+	
 
 	public static SideMain getInstance() {
 		if (instance == null) {
@@ -91,7 +95,7 @@ public class SideMain {
 				sign.show();
 			}
 		});
-		btnSignup.setBounds(1069, 52, 97, 23);
+		btnSignup.setBounds(1075, 38, 97, 23);
 		frame.getContentPane().add(btnSignup);
 
 		appTableOutput();
@@ -149,7 +153,7 @@ public class SideMain {
 
 		lblId = new JLabel("아이디 들어가는 자리");
 		lblId.setHorizontalAlignment(JLabel.RIGHT);
-		lblId.setBounds(961, 13, 211, 15);
+		lblId.setBounds(919, 13, 168, 15);
 		frame.getContentPane().add(lblId);
 
 		btnLogout = new JButton("로그아웃");
@@ -183,6 +187,33 @@ public class SideMain {
 		});
 		btnAppInsert.setBounds(71, 447, 113, 60);
 		frame.getContentPane().add(btnAppInsert);
+		
+		textSerch = new JTextField();
+		textSerch.setBounds(298, 39, 162, 21);
+		frame.getContentPane().add(textSerch);
+		textSerch.setColumns(10);
+		
+		JButton btnNewButton_1 = new JButton("검색");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				appSerch();
+				
+			}
+		});
+		btnNewButton_1.setBounds(506, 38, 97, 23);
+		frame.getContentPane().add(btnNewButton_1);
+		
+		JLabel lblNewLabel = new JLabel("전자제품");
+		lblNewLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				appTableRefresh();
+			}
+		});
+		lblNewLabel.setFont(new Font("굴림", Font.BOLD, 23));
+		lblNewLabel.setBounds(50, 13, 199, 62);
+		frame.getContentPane().add(lblNewLabel);
 		btnAdmin.setVisible(false);
 
 		refreshUI();
@@ -312,4 +343,31 @@ public class SideMain {
 		inven.setModel(tableModel);
 
 	}//end refresh
+	
+	
+	public void appSerch() {
+		ApplianceDAO dao = ApplianceDAOImple.getInstance();
+		appList = dao.serch("%"+textSerch.getText()+"%");
+		int size = appList.size();
+		String[] header = { "제품 ID", "제품명", "가격", "제조사", "재고" };
+		Object[][] data = new Object[size][header.length];
+		for (int i = 0; i < size; i++) {
+			data[i][0] = appList.get(i).getApID();
+			System.out.println(appList.get(i).getApID());
+			data[i][1] = appList.get(i).getApName();
+			data[i][2] = appList.get(i).getApPrice();
+			data[i][3] = appList.get(i).getApMfr();
+			data[i][4] = appList.get(i).getApStock();
+
+		}
+		tableModel = new DefaultTableModel(data, header) {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		
+		DefaultTableModel model = (DefaultTableModel)inven.getModel();
+		model.setNumRows(0);
+		inven.setModel(tableModel);
+	}
 }// end main

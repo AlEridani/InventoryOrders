@@ -19,6 +19,8 @@ public class AppInsert {
 	private JTextField textApPrice;
 	private JTextField textApMfr;
 	private JTextField textStock;
+	
+	
 
 
 	public AppInsert() {
