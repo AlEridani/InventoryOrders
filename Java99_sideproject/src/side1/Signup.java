@@ -8,9 +8,11 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 
-public class Signup {
+public class Signup{
 
 	private JFrame frame;
 	private JTextField textId;
@@ -147,4 +149,8 @@ public class Signup {
 		    }
 		return true;
 	}
+
+	  public void addFrameCloseListener(WindowListener listener) {
+	        frame.addWindowListener(listener);
+	    }//end addFrameCloseListener
 }

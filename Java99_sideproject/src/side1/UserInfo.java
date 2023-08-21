@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
+import java.awt.Font;
 
 public class UserInfo {
 
@@ -93,16 +94,19 @@ public class UserInfo {
 		frame.getContentPane().add(separator);
 		
 		JLabel lblNewLabel_5 = new JLabel("최근 주문 내역");
+		lblNewLabel_5.setFont(new Font("굴림", Font.BOLD, 15));
 		lblNewLabel_5.setBounds(22, 401, 147, 23);
 		frame.getContentPane().add(lblNewLabel_5);
 
 		
 				
 		lblOrderDate = new JLabel("주문날짜 들어가는곳");
+		lblOrderDate.setFont(new Font("굴림", Font.BOLD, 12));
 		lblOrderDate.setBounds(22, 461, 136, 23);
 		frame.getContentPane().add(lblOrderDate);
 		
 		lblAppName = new JLabel("제조사 + 물건명 + 물건코드");
+		lblAppName.setFont(new Font("굴림", Font.PLAIN, 15));
 		lblAppName.setBounds(22, 494, 278, 31);
 		frame.getContentPane().add(lblAppName);
 		
@@ -114,8 +118,8 @@ public class UserInfo {
 		lblQuantity.setBounds(22, 535, 57, 15);
 		frame.getContentPane().add(lblQuantity);
 		
-		lblOrderNumber = new JLabel("주문번호");
-		lblOrderNumber.setBounds(22, 436, 85, 15);
+		lblOrderNumber = new JLabel("주문번호 들어가는곳");
+		lblOrderNumber.setBounds(107, 434, 136, 15);
 		frame.getContentPane().add(lblOrderNumber);
 		
 		JButton btnNewButton_1 = new JButton("주문내역 전체보기 >");
@@ -127,6 +131,10 @@ public class UserInfo {
 		});
 		btnNewButton_1.setBounds(0, 590, 346, 23);
 		frame.getContentPane().add(btnNewButton_1);
+		
+		JLabel lblNewLabel_6 = new JLabel("주문번호");
+		lblNewLabel_6.setBounds(22, 434, 57, 15);
+		frame.getContentPane().add(lblNewLabel_6);
 		
 	
 
@@ -151,7 +159,8 @@ public class UserInfo {
 			lblOrderDate.setText(date);
 			lblAppName.setText(dto.getApMfr() + " " + dto.getApName() + " " +dto.getApID());
 			lblPrice.setText(String.valueOf(dto.getOrderPrice()) + "원");
-			lblQuantity.setText(String.valueOf(dto.getOrderQunatity()));
+			lblQuantity.setText(String.valueOf(dto.getOrderQunatity()) + "개");
+			lblOrderNumber.setText(String.valueOf(dto.getOrderNumber()));
 			
 		}else {
 			lblOrderDate.setVisible(false);
