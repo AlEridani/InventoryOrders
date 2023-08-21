@@ -7,12 +7,14 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
 
 public class OrdersList {
@@ -21,6 +23,7 @@ public class OrdersList {
 	private int x = 20;
 	private int y = 30;
 	private JPanel panel;
+	private int count = 0;
 
 	public OrdersList() {
 		initialize();
@@ -36,7 +39,8 @@ public class OrdersList {
 		JButton btnNewButton = new JButton("더보기");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Orders();
+				count++;
+				Orders(count);
 			}
 		});
 		btnNewButton.setBounds(22, 437, 289, 23);
@@ -63,28 +67,40 @@ public class OrdersList {
 		frame.setVisible(true);
 	}
 
-	public void Orders() {
+	public void Orders(int itemsPerPage) {
+		
+		
+	
+		
+		Session session = Session.getInstance();
+		PurchaseDAO dao = PurchaseDAOImple.getInstance();
+		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		int x = 10;
 		int y = 10;
 		int width = 200;
 		int height = 30;
 		int gap = 5; 
-		
-		
-		Session session = Session.getInstance();
-		PurchaseDAO dao = PurchaseDAOImple.getInstance();
-		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		int separatorSpacing = 10;
 		int size = list.size();
+		
+		int page = 3;
+		int end = size  - (page-1) * itemsPerPage;
+		int start = end - itemsPerPage;
+		
+		if(start < 0) {
+			start = 0;
+		}
+		
 		JLabel[] lblName = new JLabel[size];
 		JLabel[] lblOrderDate = new JLabel[size];
-		JLabel[] lblPrice = new JLabel[size];
+	
 		JLabel[] lblQuantity = new JLabel[size];
 		JLabel[] lblOrderNumber = new JLabel[size];
-		for (int i = 0; i < size; i++) {
+		for (int i = end; i >= start; i--) {
 			
-			lblOrderNumber[i] = new JLabel(String.valueOf(list.get(i).getOrderNumber()));
+			lblOrderNumber[i] = new JLabel("주문번호 : " + String.valueOf(list.get(i).getOrderNumber()));
 			panel.add(lblOrderNumber[i]);
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -92,35 +108,25 @@ public class OrdersList {
 			lblOrderDate[i] = new JLabel(date);
 			panel.add(lblOrderDate[i]);
 			
-			lblName[i] = new JLabel(list.get(i).getApMfr() + " " +list.get(i).getApName() );
+			lblName[i] = new JLabel(list.get(i).getApMfr() + " " +list.get(i).getApName());
 			panel.add(lblName[i]);
 			
-			lblPrice[i] = new JLabel(String.valueOf(list.get(i).getOrderPrice()));
-			panel.add(lblPrice[i]);
-			lblQuantity[i] = new JLabel(String.valueOf(list.get(i).getOrderQunatity()));
+			lblQuantity[i] = new JLabel(String.valueOf(list.get(i).getOrderQunatity()) + "개 " + list.get(i).getOrderPrice() + " 원");
 			panel.add(lblQuantity[i]);
 			
-
-			lblName[i].setVisible(true);
 			
-			
-
-			  // 다음 라벨의 y 좌표를 업데이트
-			lblOrderDate[i].setBounds(x, y, width, height);
-			y += (height + gap);
-			lblName[i].setBounds(x, y, width, height);
-			y += (height + gap);  // 다음 라벨의 y 좌표를 업데이트
-
-			lblPrice[i].setBounds(x, y, width, height);
-			y += (height + gap);  // 다음 라벨의 y 좌표를 업데이트
-
-			lblQuantity[i].setBounds(x, y, width, height);
-			y += (height + gap);  // 다음 라벨의 y 좌표를 업데이트
-
-			lblOrderNumber[i].setBounds(x, y, width, height);
-
 		
-		}
+			
+		    panel.add(Box.createVerticalStrut(separatorSpacing));
+			JSeparator separator = new JSeparator();
+	        separator.setBounds(x, y, width, 2); // separator의 높이를 2로 설정
+	        panel.add(separator);
+	        y += (2 + gap + separatorSpacing); 
+
+	        panel.add(Box.createVerticalStrut(separatorSpacing));
+		}//end for
+		
+		
 		 panel.revalidate();
 		 panel.repaint();
 	}

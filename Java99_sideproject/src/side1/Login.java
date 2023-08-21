@@ -110,15 +110,8 @@ public class Login {
 			Session session = Session.getInstance();
 
 			session.setDto(dto);
-			System.out.println("id : " + session.getDto().getMemberID());
-			System.out.println("name : " + session.getDto().getName());
-			System.out.println("email : " + session.getDto().getEmail());
-			System.out.println("phone : " + session.getDto().getPhone());
-			System.out.println("권한 : " + session.getDto().getMemberGrade());
 
 			JOptionPane.showMessageDialog(null, "로그인 성공");
-			SideMain side = SideMain.getInstance();
-			side.refreshUI();
 			frame.dispose();
 			return true;
 		}else {
