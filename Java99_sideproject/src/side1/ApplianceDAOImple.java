@@ -1,0 +1,249 @@
+package side1;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import oracle.jdbc.driver.OracleDriver;
+
+public class ApplianceDAOImple implements ApplianceDAO {
+
+
+	private static final String TABLE_NAME = "APPLIANCE";
+	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
+	private static final String USER = "side2";
+	private static final String PW = "side22";
+	private static final String COL_ID = "AP_ID";
+	private static final String COL_NAME = "AP_NAME";
+	private static final String COL_PRICE = "AP_PRICE";
+	private static final String COL_MFR = "AP_MFR";
+	private static final String COL_STOCK = "AP_STOCK";
+
+
+
+	private static String appInsert = "INSERT INTO " + TABLE_NAME + " VALUES (?,?,?,?,?)";
+
+	private static String appSelect = "SELECT * FROM " + TABLE_NAME;
+
+	private static String appSerch = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_NAME + " LIKE ?";
+
+	private static String appInfo = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID + " = ?";
+
+	private static String appDelete = "DELETE FROM " + TABLE_NAME + " WHERE " + COL_ID + " = ?";
+
+	private static String appUpdate = "UPDATE " + TABLE_NAME + " SET "
+									  + COL_NAME + " = ?, "
+									  + COL_PRICE + " = ?, "
+									  + COL_MFR + " = ?, "
+									  + COL_STOCK + " = ? "
+									  + "WHERE AP_ID = ?";
+
+
+	private static ApplianceDAOImple instance = null;
+
+	private ApplianceDAOImple() {
+
+	}
+
+	public static ApplianceDAOImple getInstance() {
+		if (instance == null) {
+			instance = new ApplianceDAOImple();
+		}
+		return instance;
+	}
+
+	ArrayList<ApplianceDTO> list = new ArrayList<>();
+
+	@Override
+	public int appInsert(ApplianceDTO dto) {
+		int result = -1;
+		try {
+			DriverManager.registerDriver(new OracleDriver());
+			Connection conn = DriverManager.getConnection(URL, USER, PW);
+			PreparedStatement pstmt = conn.prepareStatement(appInsert);
+			System.out.println("실행 sql문 확인 : " + appInsert);
+			//ID,이름,가격,제조사,재고순
+			pstmt.setString(1, dto.getApID());
+			pstmt.setString(2, dto.getApName());
+			pstmt.setInt(3, dto.getApPrice());
+			pstmt.setString(4, dto.getApMfr());
+			pstmt.setInt(5, dto.getApStock());
+
+			result = pstmt.executeUpdate();
+
+			pstmt.close();
+			conn.close();
+
+			return result;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+
+		return result;
+	}
+
+	@Override
+	public ArrayList<ApplianceDTO> select() {
+		try {
+			DriverManager.registerDriver(new OracleDriver());
+			Connection conn = DriverManager.getConnection(URL, USER, PW);
+			PreparedStatement pstmt = conn.prepareStatement(appSelect);
+			ResultSet rs = pstmt.executeQuery();
+			System.out.println(appSelect);
+			list = new ArrayList<>();
+			while(rs.next()) {
+				//ID,이름,가격,제조사,재고순
+				ApplianceDTO dto = new ApplianceDTO();
+				dto.setApID(rs.getString(COL_ID));
+				dto.setApName(rs.getString(COL_NAME));
+				dto.setApPrice(rs.getInt(COL_PRICE));
+				dto.setApMfr(rs.getString(COL_MFR));
+				dto.setApStock(rs.getInt(COL_STOCK));
+				list.add(dto);
+			}
+
+			rs.close();
+			pstmt.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("sql문 에러 :" + appSelect);
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("다른 무언가 에러");
+		}
+
+		return list;
+	}
+
+	@Override
+	public ArrayList<ApplianceDTO> serch(String apName) {
+
+		try {
+			DriverManager.registerDriver(new OracleDriver());
+			Connection conn = DriverManager.getConnection(URL, USER, PW);
+			PreparedStatement pstmt = conn.prepareStatement(appSerch);
+			System.out.println("sql문 : " + appSerch);
+			System.out.println("검색text : " + apName);
+			pstmt.setString(1, apName);
+			ResultSet rs = pstmt.executeQuery();
+
+			list = new ArrayList<>();
+			while(rs.next()) {
+				//ID,이름,가격,제조사,재고순
+				ApplianceDTO dto = new ApplianceDTO();
+				dto.setApID(rs.getString(COL_ID));
+				dto.setApName(rs.getString(COL_NAME));
+				dto.setApPrice(rs.getInt(COL_PRICE));
+				dto.setApMfr(rs.getString(COL_MFR));
+				dto.setApStock(rs.getInt(COL_STOCK));
+				list.add(dto);
+			}
+
+			rs.close();
+			pstmt.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("sql문 에러 :" + appSelect);
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("다른 무언가 에러");
+		}
+
+		return list;
+	}
+
+
+
+	@Override
+	public int appUpdate(ApplianceDTO dto) {
+		int result = -1;
+		try {
+			DriverManager.registerDriver(new OracleDriver());
+			Connection conn = DriverManager.getConnection(URL, USER, PW);
+			PreparedStatement pstmt = conn.prepareStatement(appUpdate);
+			//1.name 2.price 3.mfr 4.stock 5.id
+			System.out.println("쿼리문 확인 : " + appUpdate);
+			pstmt.setString(1, dto.getApName());
+			pstmt.setInt(2, dto.getApPrice());
+			pstmt.setString(3, dto.getApMfr());
+			pstmt.setInt(4, dto.getApStock());
+			pstmt.setString(5, dto.getApID());
+
+			result = pstmt.executeUpdate();
+
+			pstmt.close();
+			conn.close();
+			return result;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	@Override
+	public int appDelete(String apId) {
+		int result = -1;
+		try {
+			DriverManager.registerDriver(new OracleDriver());
+			Connection conn = DriverManager.getConnection(URL, USER, PW);
+			PreparedStatement pstmt = conn.prepareStatement(appDelete);
+			pstmt.setString(1, apId);
+			System.out.println("넘겨받은 문자열 확인 " + apId);
+			result = pstmt.executeUpdate();
+
+
+			pstmt.close();
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	@Override
+	public ApplianceDTO appInfo(String apId) {
+		ApplianceDTO dto = new ApplianceDTO();
+		try {
+			DriverManager.registerDriver(new OracleDriver());
+			Connection conn = DriverManager.getConnection(URL, USER, PW);
+			PreparedStatement pstmt = conn.prepareStatement(appInfo);
+			System.out.println("sql문 확인 : " + appInfo);
+			System.out.println("매개변수 확인 : " +apId);
+			pstmt.setString(1, apId);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+
+				dto.setApID(rs.getString(COL_ID));
+				dto.setApName(rs.getString(COL_NAME));
+				dto.setApPrice(rs.getInt(COL_PRICE));
+				dto.setApMfr(rs.getString(COL_MFR));
+				dto.setApStock(rs.getInt(COL_STOCK));
+			}
+
+			rs.close();
+			pstmt.close();
+			conn.close();
+			return dto;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("sql구문 에러");
+		}
+
+
+		return null;
+	}
+
+}
