@@ -147,7 +147,6 @@ public class UserInfo {
 		frame.setVisible(true);
 	}
 	public void showLabelRecord(Session session) {
-		//로직문제 지금 sql문을 새로가져오는게 안되는것같음
 		
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());

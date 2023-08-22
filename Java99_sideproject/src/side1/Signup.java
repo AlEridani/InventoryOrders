@@ -38,67 +38,7 @@ public class Signup{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 441, 464);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-
-		JLabel lblNewLabel = new JLabel("회원가입");
-		lblNewLabel.setBounds(201, 20, 57, 15);
-		frame.getContentPane().add(lblNewLabel);
-
-		JLabel lblNewLabel_1 = new JLabel("아이디");
-		lblNewLabel_1.setBounds(43, 75, 57, 15);
-		frame.getContentPane().add(lblNewLabel_1);
-
-		JLabel lblNewLabel_2 = new JLabel("비밀번호");
-		lblNewLabel_2.setBounds(43, 136, 57, 15);
-		frame.getContentPane().add(lblNewLabel_2);
-
-		JLabel lblNewLabel_3 = new JLabel("이름");
-		lblNewLabel_3.setBounds(43, 194, 57, 15);
-		frame.getContentPane().add(lblNewLabel_3);
-
-		JLabel lblNewLabel_4 = new JLabel("이메일");
-		lblNewLabel_4.setBounds(43, 254, 57, 15);
-		frame.getContentPane().add(lblNewLabel_4);
-
-		JLabel lblNewLabel_5 = new JLabel("연락처");
-		lblNewLabel_5.setBounds(43, 315, 57, 15);
-		frame.getContentPane().add(lblNewLabel_5);
-
-		JButton btnNewButton = new JButton("등록");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				sign();
-			}
-		});
-		btnNewButton.setBounds(167, 373, 97, 23);
-		frame.getContentPane().add(btnNewButton);
-
-		textId = new JTextField();
-		textId.setBounds(122, 72, 198, 21);
-		frame.getContentPane().add(textId);
-		textId.setColumns(10);
-
-		textName = new JTextField();
-		textName.setColumns(10);
-		textName.setBounds(122, 191, 198, 21);
-		frame.getContentPane().add(textName);
-
-		textEmail = new JTextField();
-		textEmail.setColumns(10);
-		textEmail.setBounds(122, 251, 198, 21);
-		frame.getContentPane().add(textEmail);
-
-		textPhone = new JTextField();
-		textPhone.setColumns(10);
-		textPhone.setBounds(122, 312, 198, 21);
-		frame.getContentPane().add(textPhone);
-
-		textPw = new JPasswordField();
-		textPw.setBounds(122, 133, 198, 21);
-		frame.getContentPane().add(textPw);
+		
 	}
 
 
@@ -153,4 +93,69 @@ public class Signup{
 	  public void addFrameCloseListener(WindowListener listener) {
 	        frame.addWindowListener(listener);
 	    }//end addFrameCloseListener
+	  
+	  
+	  public void signupFrame() {
+		  frame = new JFrame();
+			frame.setBounds(100, 100, 441, 464);
+			frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			frame.getContentPane().setLayout(null);
+
+			JLabel lblNewLabel = new JLabel("회원가입");
+			lblNewLabel.setBounds(201, 20, 57, 15);
+			frame.getContentPane().add(lblNewLabel);
+
+			JLabel lblNewLabel_1 = new JLabel("아이디");
+			lblNewLabel_1.setBounds(43, 75, 57, 15);
+			frame.getContentPane().add(lblNewLabel_1);
+
+			JLabel lblNewLabel_2 = new JLabel("비밀번호");
+			lblNewLabel_2.setBounds(43, 136, 57, 15);
+			frame.getContentPane().add(lblNewLabel_2);
+
+			JLabel lblNewLabel_3 = new JLabel("이름");
+			lblNewLabel_3.setBounds(43, 194, 57, 15);
+			frame.getContentPane().add(lblNewLabel_3);
+
+			JLabel lblNewLabel_4 = new JLabel("이메일");
+			lblNewLabel_4.setBounds(43, 254, 57, 15);
+			frame.getContentPane().add(lblNewLabel_4);
+
+			JLabel lblNewLabel_5 = new JLabel("연락처");
+			lblNewLabel_5.setBounds(43, 315, 57, 15);
+			frame.getContentPane().add(lblNewLabel_5);
+
+			JButton btnNewButton = new JButton("등록");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					sign();
+				}
+			});
+			btnNewButton.setBounds(167, 373, 97, 23);
+			frame.getContentPane().add(btnNewButton);
+
+			textId = new JTextField();
+			textId.setBounds(122, 72, 198, 21);
+			frame.getContentPane().add(textId);
+			textId.setColumns(10);
+
+			textName = new JTextField();
+			textName.setColumns(10);
+			textName.setBounds(122, 191, 198, 21);
+			frame.getContentPane().add(textName);
+
+			textEmail = new JTextField();
+			textEmail.setColumns(10);
+			textEmail.setBounds(122, 251, 198, 21);
+			frame.getContentPane().add(textEmail);
+
+			textPhone = new JTextField();
+			textPhone.setColumns(10);
+			textPhone.setBounds(122, 312, 198, 21);
+			frame.getContentPane().add(textPhone);
+
+			textPw = new JPasswordField();
+			textPw.setBounds(122, 133, 198, 21);
+			frame.getContentPane().add(textPw);
+	  }
 }

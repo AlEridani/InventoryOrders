@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
@@ -24,6 +25,7 @@ public class OrdersList {
 	private int y = 30;
 	private JPanel panel;
 	private int count = 0;
+	private JButton btnNewButton;
 
 	public OrdersList() {
 		initialize();
@@ -36,7 +38,7 @@ public class OrdersList {
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		JButton btnNewButton = new JButton("더보기");
+		btnNewButton = new JButton("더보기");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				count++;
@@ -57,78 +59,82 @@ public class OrdersList {
 		scrollPane.setBounds(2, 30, 359, 371);
 		frame.getContentPane().add(scrollPane);
 
+		JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+		verticalBar.setValue(verticalBar.getMaximum());
+
 		JLabel lblNewLabel = new JLabel("주문 내역");
 		lblNewLabel.setFont(new Font("굴림", Font.BOLD, 18));
 		lblNewLabel.setBounds(12, 10, 161, 18);
 		frame.getContentPane().add(lblNewLabel);
+
+		Orders(count);
 	}
 
 	public void show() {
 		frame.setVisible(true);
 	}
 
-	public void Orders(int itemsPerPage) {
-		
-		
-	
-		
+	public void Orders(int clicked) {
+
 		Session session = Session.getInstance();
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
+
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		
+
 		int x = 10;
 		int y = 10;
 		int width = 200;
 		int height = 30;
-		int gap = 5; 
+		int gap = 5;
 		int separatorSpacing = 10;
 		int size = list.size();
-		
+
+		// 페이징
 		int page = 3;
-		int end = size  - (page-1) * itemsPerPage;
-		int start = end - itemsPerPage;
-		
-		if(start < 0) {
-			start = 0;
-		}
-		
+		int start = size - 1 - (page * clicked);// 49 46 43 40 size는 50
+		int end = start - page;// 46 43 40
+
 		JLabel[] lblName = new JLabel[size];
 		JLabel[] lblOrderDate = new JLabel[size];
-	
+
 		JLabel[] lblQuantity = new JLabel[size];
 		JLabel[] lblOrderNumber = new JLabel[size];
-		for (int i = end; i >= start; i--) {
-			
+		for (int i = start; i > end; i--) {
+			System.out.println(" i : " + i);
+			System.out.println("size : " + size);
+			if (i <= 0) {
+				JLabel lblOerdersEnd = new JLabel("이전 주문 내역이 없습니다");
+				lblOerdersEnd.setFont(new Font("굴림", Font.BOLD, 23));
+				panel.add(lblOerdersEnd);
+				btnNewButton.setEnabled(false);
+				break;
+			}
 			lblOrderNumber[i] = new JLabel("주문번호 : " + String.valueOf(list.get(i).getOrderNumber()));
 			panel.add(lblOrderNumber[i]);
-			
+
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String date = sdf.format(list.get(i).getOrderDate());
 			lblOrderDate[i] = new JLabel(date);
 			panel.add(lblOrderDate[i]);
-			
-			lblName[i] = new JLabel(list.get(i).getApMfr() + " " +list.get(i).getApName());
-			panel.add(lblName[i]);
-			
-			lblQuantity[i] = new JLabel(String.valueOf(list.get(i).getOrderQunatity()) + "개 " + list.get(i).getOrderPrice() + " 원");
-			panel.add(lblQuantity[i]);
-			
-			
-		
-			
-		    panel.add(Box.createVerticalStrut(separatorSpacing));
-			JSeparator separator = new JSeparator();
-	        separator.setBounds(x, y, width, 2); // separator의 높이를 2로 설정
-	        panel.add(separator);
-	        y += (2 + gap + separatorSpacing); 
 
-	        panel.add(Box.createVerticalStrut(separatorSpacing));
-		}//end for
-		
-		
-		 panel.revalidate();
-		 panel.repaint();
+			lblName[i] = new JLabel(list.get(i).getApMfr() + " " + list.get(i).getApName());
+			panel.add(lblName[i]);
+
+			lblQuantity[i] = new JLabel(
+					String.valueOf(list.get(i).getOrderQunatity()) + "개 " + list.get(i).getOrderPrice() + " 원");
+			panel.add(lblQuantity[i]);
+
+			panel.add(Box.createVerticalStrut(separatorSpacing));
+			JSeparator separator = new JSeparator();
+			panel.add(separator);
+
+			panel.add(Box.createVerticalStrut(separatorSpacing));
+
+		} // end for
+
+		panel.revalidate();
+		panel.repaint();
 	}
 
 }// end OrderList

@@ -30,17 +30,10 @@ public class PurchaseDAOImple implements PurchaseDAO {
 			+ COL_ORDER_NUMBER_SQE + ", ?, ?, ?, ?)";
 
 	// 나중에 수정하기
-	private static final String purchaseSelect = "SELECT p." + COL_DATE +
-													  ", a." + COL_APID +
-													  ", a." + COL_AP_NAME +
-													  ", a." + COL_AP_MFR +
-													  ", p." + COL_ORDER_QUANTITY +
-													  ", p." + COL_ORDER_PRICE +
-													  ", p." + COL_ORDER_NUMBER + 
-													  " FROM APPLIANCE a join " + TABLE_NAME + " p"+ " ON a." + COL_APID + " = p." + COL_APID + 
-													  " WHERE p." + COL_SESSION_ID + " = ?";
-
-
+	private static final String purchaseSelect = "SELECT p." + COL_DATE + ", a." + COL_APID + ", a." + COL_AP_NAME
+			+ ", a." + COL_AP_MFR + ", p." + COL_ORDER_QUANTITY + ", p." + COL_ORDER_PRICE + ", p." + COL_ORDER_NUMBER
+			+ " FROM APPLIANCE a join " + TABLE_NAME + " p" + " ON a." + COL_APID + " = p." + COL_APID + " WHERE p."
+			+ COL_SESSION_ID + " = ?";
 
 	private static PurchaseDAOImple instance = null;
 
@@ -54,8 +47,6 @@ public class PurchaseDAOImple implements PurchaseDAO {
 	private PurchaseDAOImple() {
 
 	}
-
-	ArrayList<PurchaseDTO> list = new ArrayList<>();
 
 	@Override
 	public int purchase(PurchaseDTO dto) {
@@ -89,6 +80,8 @@ public class PurchaseDAOImple implements PurchaseDAO {
 
 	@Override
 	public ArrayList<PurchaseDTO> purchaseRecord(String id) {
+		ArrayList<PurchaseDTO> list = new ArrayList<>();
+
 		try {
 			DriverManager.registerDriver(new OracleDriver());
 			Connection conn = DriverManager.getConnection(URL, USER, PW);
@@ -96,12 +89,10 @@ public class PurchaseDAOImple implements PurchaseDAO {
 			System.out.println("sql문 확인 : " + purchaseSelect);
 			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();
-
 			while (rs.next()) {
 				PurchaseDTO dto = new PurchaseDTO();
 				dto.setOrderNumber(rs.getInt(COL_ORDER_NUMBER));
-				System.out.println("주문번호 : " + rs.getInt(COL_ORDER_NUMBER) +
-						" 제품 이름 : " + rs.getString(COL_AP_NAME));
+				System.out.println("주문번호 : " + rs.getInt(COL_ORDER_NUMBER) + " 제품 이름 : " + rs.getString(COL_AP_NAME));
 				dto.setOrderDate(rs.getDate(COL_DATE));
 				dto.setApID(rs.getString(COL_APID));
 				dto.setApName(rs.getString(COL_AP_NAME));
@@ -112,11 +103,11 @@ public class PurchaseDAOImple implements PurchaseDAO {
 				list.add(dto);
 
 			}
-			
+
 			rs.close();
 			pstmt.close();
 			conn.close();
-			
+
 		} catch (Exception e) {
 		}
 
