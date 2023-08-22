@@ -27,6 +27,7 @@ public class MemberList {
 	private MemberDAO dao;
 	private ArrayList<MemberDTO> list;
 	private String clickedID;
+	private boolean selectOrSerch = true;
 
 	public MemberList() {
 		initialize();
@@ -73,9 +74,13 @@ public class MemberList {
 				int result = JOptionPane.showConfirmDialog(frame, "해당 회원을 삭제하겠습니까?", "멤버삭제 확인",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
-					
+
 					userDelete();
-					reloadTable();
+					if (selectOrSerch) {
+						reloadTable();
+					} else {
+						memberSerch();
+					}
 				}
 			}
 		});
@@ -92,7 +97,11 @@ public class MemberList {
 					if (result == JOptionPane.YES_OPTION) {
 						JOptionPane.showMessageDialog(null, "관리자 등록이 되었습니다");
 						memderGradeChange();
-						reloadTable();
+						if (selectOrSerch) {
+							reloadTable();
+						} else {
+							memberSerch();
+						}
 					}
 				} else {
 					System.out.println("클릭안됨");
@@ -107,6 +116,7 @@ public class MemberList {
 		btnUserDelete_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				memberSerch();
+
 			}
 		});
 		btnUserDelete_1.setBounds(460, 18, 110, 51);
@@ -128,18 +138,26 @@ public class MemberList {
 				int selectedRow = table.getSelectedRow();
 				int idColumnIndex = table.getColumnModel().getColumnIndex("회원등급");
 				String clickedGrade = table.getModel().getValueAt(selectedRow, idColumnIndex).toString();
+				if (!isOnlyAdmin()) {
+					if (clickedGrade.equals("ADMIN")) {
+						int result = JOptionPane.showConfirmDialog(frame, "해당 사용자를 일반유저로 변경하겠습니까?", "관리자 권한 제거",
+								JOptionPane.YES_NO_OPTION);
+						if (result == JOptionPane.YES_OPTION) {
+							JOptionPane.showMessageDialog(null, "일반유저로 전환되었습니다");
+							memderAdminToUser();
+							if (selectOrSerch) {
+								reloadTable();
+							} else {
+								memberSerch();
+							}
+						}//end (result == JOptionPane.YES_OPTION)
 
-				if (clickedGrade.equals("ADMIN")) {
-					int result = JOptionPane.showConfirmDialog(frame, "해당 사용자를 일반유저로 변경하겠습니까?", "관리자 권한 제거",
-							JOptionPane.YES_NO_OPTION);
-					if (result == JOptionPane.YES_OPTION) {
-						JOptionPane.showMessageDialog(null, "일반유저로 전환되었습니다");
-						memderAdminToUser();
-						reloadTable();
-					}
-
+					}//end clickedGrade.equals("ADMIN")
+					//end !isOnlyAdmin()// 관리자 계정이 하나임
+				}else {
+					JOptionPane.showMessageDialog(null, "관리자 계정이 하나 남아서 권한을 삭제할 수 없습니다");
 				}
-			}
+			}//end actionPerformed
 		});
 		btnChangeUser.setBounds(460, 438, 110, 51);
 		frame.getContentPane().add(btnChangeUser);
@@ -147,6 +165,7 @@ public class MemberList {
 	}
 
 	public void memberSelect() {
+		selectOrSerch = true;
 		list = dao.select();
 		table();
 
@@ -157,7 +176,7 @@ public class MemberList {
 	}
 
 	public void memberSerch() {
-
+		selectOrSerch = false;
 		String serchId = "%" + textSerch.getText() + "%";
 		list = dao.serch(serchId);
 		table();
@@ -212,9 +231,24 @@ public class MemberList {
 		};
 		table.setModel(model);
 	}
-	
-	  public void addFrameCloseListener(WindowListener listener) {
-	        frame.addWindowListener(listener);
-	    }//end addFrameCloseListener
+
+	public void addFrameCloseListener(WindowListener listener) {
+		frame.addWindowListener(listener);
+	}// end addFrameCloseListener
+
+	public boolean isOnlyAdmin() {
+		list = dao.select();
+		int count = 0;
+		for (MemberDTO x : list) {
+			if (x.getMemberGrade().equals("ADMIN")) {
+				count++;
+			}
+		}
+		if (count <= 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }

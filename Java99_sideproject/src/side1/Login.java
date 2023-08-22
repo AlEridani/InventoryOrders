@@ -89,7 +89,7 @@ public class Login {
 
 	public boolean login() {
 		id = textID.getText();
-		char[] pw = textPw.getPassword();
+		char[] pw 	= textPw.getPassword();
 		dao = MemberDAOImple.getInstance();
 
 		MemberDTO dto = dao.currentUserInfo(id);
@@ -117,6 +117,7 @@ public class Login {
 			return true;
 		}else {
 			labelId.setText("비밀번호를 다시 확인해주세요");
+			textPw.setText("");
 			labelId.setVisible(true);
 		}
 

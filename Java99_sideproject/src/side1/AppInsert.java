@@ -63,7 +63,7 @@ public class AppInsert {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ApInsert();
-
+				
 			}
 		});
 		btnNewButton.setBounds(257, 381, 97, 23);

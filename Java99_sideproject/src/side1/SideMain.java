@@ -73,7 +73,7 @@ public class SideMain {
 
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1196, 602);
+		frame.setBounds(100, 100, 1200, 602);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -119,7 +119,7 @@ public class SideMain {
 			}
 		});
 		inven.setBackground(Color.LIGHT_GRAY);
-		inven.setBounds(1, 50, 1022, 393);
+		inven.setBounds(1, 38, 570, 405);
 		frame.getContentPane().add(inven);
 
 		JScrollPane scrollPane = new JScrollPane(inven);
@@ -135,6 +135,8 @@ public class SideMain {
 						@Override
 						public void windowClosed(WindowEvent e) {
 							userInfoToken = false;
+							session.getInstance();
+							refreshUI();
 						}
 					});
 					
@@ -163,7 +165,7 @@ public class SideMain {
 				memberList.show();
 			}
 		});
-		btnAdmin.setBounds(688, 38, 113, 23);
+		btnAdmin.setBounds(225, 447, 113, 60);
 		frame.getContentPane().add(btnAdmin);
 
 		lblId = new JLabel("아이디 들어가는 자리");
@@ -204,7 +206,7 @@ public class SideMain {
 		frame.getContentPane().add(btnAppInsert);
 
 		textSerch = new JTextField();
-		textSerch.setBounds(298, 39, 162, 21);
+		textSerch.setBounds(450, 39, 162, 21);
 		frame.getContentPane().add(textSerch);
 		textSerch.setColumns(10);
 
@@ -216,7 +218,7 @@ public class SideMain {
 
 			}
 		});
-		btnNewButton_1.setBounds(506, 38, 97, 23);
+		btnNewButton_1.setBounds(650, 38, 97, 23);
 		frame.getContentPane().add(btnNewButton_1);
 
 		JLabel lblNewLabel = new JLabel("전자제품");
@@ -355,13 +357,12 @@ public class SideMain {
 	
 	
 	public void table() {
-		
+
 		int size = appList.size();
 		String[] header = { "제품 ID", "제품명", "가격", "제조사", "재고" };
 		Object[][] data = new Object[size][header.length];
 		for (int i = 0; i < size; i++) {
 			data[i][0] = appList.get(i).getApID();
-			System.out.println(appList.get(i).getApID());
 			data[i][1] = appList.get(i).getApName();
 			data[i][2] = numberFormat(appList.get(i).getApPrice()) + "원";
 			data[i][3] = appList.get(i).getApMfr();
@@ -373,7 +374,6 @@ public class SideMain {
 				return false;
 			}
 		};
-		
 	}//end table
 	
 	public String numberFormat(int num) {

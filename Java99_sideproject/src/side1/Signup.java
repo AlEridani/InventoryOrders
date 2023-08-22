@@ -51,6 +51,7 @@ public class Signup{
 		textArea.setText("로그인 약관");
 		textArea.setBounds(33, 65, 866, 232);
 		frame.getContentPane().add(textArea);
+		textArea.setEditable(false);
 		
 		rbtnSignAccep = new JRadioButton("동의");
 		rbtnSignAccep.addActionListener(new ActionListener() {
@@ -84,7 +85,7 @@ public class Signup{
 		textArea_1.setText("개인정보 동의");
 		textArea_1.setBounds(33, 357, 866, 232);
 		frame.getContentPane().add(textArea_1);
-		
+		textArea_1.setEditable(false);
 		rbtnAccep = new JRadioButton("동의");
 		rbtnAccep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
