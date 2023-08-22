@@ -82,11 +82,7 @@ public class OrdersList {
 
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		int x = 10;
-		int y = 10;
-		int width = 200;
-		int height = 30;
-		int gap = 5;
+		
 		int separatorSpacing = 10;
 		int size = list.size();
 
@@ -101,8 +97,6 @@ public class OrdersList {
 		JLabel[] lblQuantity = new JLabel[size];
 		JLabel[] lblOrderNumber = new JLabel[size];
 		for (int i = start; i > end; i--) {
-			System.out.println(" i : " + i);
-			System.out.println("size : " + size);
 			if (i <= 0) {
 				JLabel lblOerdersEnd = new JLabel("이전 주문 내역이 없습니다");
 				lblOerdersEnd.setFont(new Font("굴림", Font.BOLD, 23));

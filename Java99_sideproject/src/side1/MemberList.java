@@ -4,12 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -48,16 +50,14 @@ public class MemberList {
 		frame.getContentPane().add(textSerch);
 		textSerch.setColumns(10);
 
-
-
 		table = new JTable(tableModel);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				 int selectedRow = table.getSelectedRow();
-				 int idColumnIndex = table.getColumnModel().getColumnIndex("ID");
-				 clickedID = table.getModel().getValueAt(selectedRow, idColumnIndex).toString();
-				 System.out.println("클릭인덱스: " + clickedID);
+				int selectedRow = table.getSelectedRow();
+				int idColumnIndex = table.getColumnModel().getColumnIndex("ID");
+				clickedID = table.getModel().getValueAt(selectedRow, idColumnIndex).toString();
+				System.out.println("클릭인덱스: " + clickedID);
 			}
 		});
 		frame.getContentPane().add(table);
@@ -71,8 +71,13 @@ public class MemberList {
 		JButton btnUserDelete = new JButton("멤버삭제");
 		btnUserDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				userDelete();
-				reloadTable();
+				int result = JOptionPane.showConfirmDialog(frame, "해당 회원을 삭제하겠습니까?", "멤버삭제 확인",
+						JOptionPane.YES_NO_OPTION);
+				if (result == JOptionPane.YES_OPTION) {
+					JOptionPane.showMessageDialog(null, "회원이 삭제 되었습니다");
+					userDelete();
+					reloadTable();
+				}
 			}
 		});
 		btnUserDelete.setBounds(460, 228, 110, 51);
@@ -81,10 +86,16 @@ public class MemberList {
 		JButton btnChangeAdmin = new JButton("관리자 등록");
 		btnChangeAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(clickedID != null) {
-				memderGradeChange();
-				reloadTable();
-				}else {
+
+				if (clickedID != null) {
+					int result = JOptionPane.showConfirmDialog(frame, "해당 회원을 관리자로 등록하겠습니까?", "관리자 등록",
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						JOptionPane.showMessageDialog(null, "관리자 등록이 되었습니다");
+						memderGradeChange();
+						reloadTable();
+					}
+				} else {
 					System.out.println("클릭안됨");
 				}
 			}
@@ -115,8 +126,20 @@ public class MemberList {
 		JButton btnChangeUser = new JButton("관리자 삭제");
 		btnChangeUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				memderAdminToUser();
-				reloadTable();
+				int selectedRow = table.getSelectedRow();
+				int idColumnIndex = table.getColumnModel().getColumnIndex("회원등급");
+				String clickedGrade = table.getModel().getValueAt(selectedRow, idColumnIndex).toString();
+
+				if (clickedGrade.equals("ADMIN")) {
+					int result = JOptionPane.showConfirmDialog(frame, "해당 사용자를 일반유저로 변경하겠습니까?", "관리자 권한 제거",
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						JOptionPane.showMessageDialog(null, "일반유저로 전환되었습니다");
+						memderAdminToUser();
+						reloadTable();
+					}
+
+				}
 			}
 		});
 		btnChangeUser.setBounds(460, 438, 110, 51);
@@ -124,36 +147,11 @@ public class MemberList {
 
 	}
 
-
-
-
 	public void memberSelect() {
-
-
 		list = dao.select();
-
-		int size = dao.select().size();
-		String[] header = { "ID", "비밀번호", "이름", "EMAIL", "PHONE", "회원등급" };
-		Object[][] data = new Object[size][header.length];
-		for (int i = 0; i < size; i++) {
-			data[i][0] = list.get(i).getMemberID();
-			data[i][1] = list.get(i).getPw();// 암호 그대로 표시 안되게 뭉개기
-			data[i][2] = list.get(i).getName();
-			data[i][3] = list.get(i).getEmail();
-			data[i][4] = list.get(i).getPhone();
-			data[i][5] = list.get(i).getMemberGrade();
-
-		}
-		DefaultTableModel model = new DefaultTableModel(data, header){
-			@Override
-			public boolean isCellEditable (int row, int column) {
-				return false;
-			}
-		};
-		table.setModel(model);
+		table();
 
 	}
-
 
 	public void show() {
 		frame.setVisible(true);
@@ -163,6 +161,37 @@ public class MemberList {
 
 		String serchId = "%" + textSerch.getText() + "%";
 		list = dao.serch(serchId);
+		table();
+
+	}
+
+	private void reloadTable() {
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.setRowCount(0);
+		memberSelect();
+
+	}
+
+	public void memderGradeChange() {
+		MemberDTO dto = dao.currentUserInfo(clickedID);// id를 검색해서 dto에 넣는다
+		dao.memberGrade(dto);// dto의 멤버등급을 변경한다
+	}
+
+	public void memderAdminToUser() {
+		MemberDTO dto = dao.currentUserInfo(clickedID);// id를 검색해서 dto에 넣는다
+		dao.memberChangeAdminToUser(dto);// dto의 멤버등급을 변경한다
+	}
+
+	public void userDelete() {
+		MemberDTO dto = dao.currentUserInfo(clickedID);
+		if (!dto.getMemberGrade().equals("ADMIN")) {
+			dao.delete(dto.getMemberID());
+		} else {
+			JOptionPane.showMessageDialog(null, "관리자 계정은 삭제할 수 없습니다");
+		}
+	}
+
+	public void table() {
 		int size = list.size();
 		String[] header = { "ID", "비밀번호", "이름", "EMAIL", "PHONE", "회원등급" };
 		Object[][] data = new Object[size][header.length];
@@ -176,39 +205,17 @@ public class MemberList {
 
 		}
 
-		DefaultTableModel model = new DefaultTableModel(data, header){
+		DefaultTableModel model = new DefaultTableModel(data, header) {
 			@Override
-			public boolean isCellEditable (int row, int column) {
+			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
 		table.setModel(model);
 	}
-	private void reloadTable() {
-		DefaultTableModel model = (DefaultTableModel)table.getModel();
-		model.setRowCount(0);
-		memberSelect();
-
-
-	}
-
-	public void memderGradeChange() {
-		MemberDTO dto = dao.session(clickedID);//id를 검색해서 dto에 넣는다
-		dao.memberGrade(dto);//dto의 멤버등급을 변경한다
-	}
-
-	public void memderAdminToUser() {
-		MemberDTO dto = dao.session(clickedID);//id를 검색해서 dto에 넣는다
-		dao.memberChangeAdminToUser(dto);//dto의 멤버등급을 변경한다
-	}
-
-	public void userDelete() {
-		MemberDTO dto = dao.session(clickedID);
-		if(!dto.getMemberGrade().equals("ADMIN")) {
-		dao.delete(dto.getMemberID());
-		}else {
-			JOptionPane.showMessageDialog(null, "관리자 계정은 삭제할 수 없습니다");
-		}
-	}
+	
+	  public void addFrameCloseListener(WindowListener listener) {
+	        frame.addWindowListener(listener);
+	    }//end addFrameCloseListener
 
 }

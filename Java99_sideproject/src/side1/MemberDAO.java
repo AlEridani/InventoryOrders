@@ -10,7 +10,7 @@ public interface MemberDAO {
 
 	public abstract ArrayList<MemberDTO> select();
 
-	public abstract MemberDTO session(String id);
+	public abstract MemberDTO currentUserInfo(String id);
 
 	public abstract ArrayList<MemberDTO> serch(String id);
 

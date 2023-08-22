@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -37,19 +38,16 @@ public class SideMain {
 	private ArrayList<ApplianceDTO> appList;
 	private DefaultTableModel tableModel;
 	private String clickedID;
-	private boolean signToken = false;
+	private boolean userInfoToken = false;
 	private boolean loginToken = false;
 
-	private static SideMain instance = null;
+	
+
+	
 	private JButton btnAppInsert;
 	private JTextField textSerch;
 
-	public static SideMain getInstance() {
-		if (instance == null) {
-			instance = new SideMain();
-		}
-		return instance;
-	}
+	
 
 	public static void main(String[] args) {
 
@@ -80,7 +78,6 @@ public class SideMain {
 		btnNewButton = new JButton("로그인");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
 				loginSession();
 
 			}
@@ -91,16 +88,11 @@ public class SideMain {
 		btnSignup = new JButton("회원가입");
 		btnSignup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!signToken) {
-					Signup sign = new Signup();
-					sign.addFrameCloseListener(new WindowAdapter() {
-						public void windowClosing(WindowEvent e) {
-							signToken = false;
-						}
-					});;
-					sign.show();
-					signToken = true;
-				}
+
+				Signup sign = new Signup();
+				
+				sign.show();
+				
 			}
 		});
 		btnSignup.setBounds(1075, 38, 97, 23);
@@ -118,7 +110,6 @@ public class SideMain {
 
 				int count = e.getClickCount();// 더블클릭시
 				if (count == 2 && isLoggedIn()) {
-
 					product();
 				}
 
@@ -136,23 +127,37 @@ public class SideMain {
 		btnMyInfo = new JButton("내 정보");
 		btnMyInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (isLoggedIn()) {
 					UserInfo userInfo = new UserInfo();
+					userInfo.addFrameCloseListener(new WindowAdapter() {
+						@Override
+						public void windowClosed(WindowEvent e) {
+							userInfoToken = false;
+						}
+					});
+					
+					if(!userInfoToken) {
 					userInfo.show();
-				} else {
-					JOptionPane.showMessageDialog(null, "로그인이 필요합니다");
-				}
-
+					userInfoToken = true;
+					}
+					
 			}
 		});
 		btnMyInfo.setBounds(1075, 38, 97, 23);
 		frame.getContentPane().add(btnMyInfo);
-
+		////여기 해야됨
 		btnAdmin = new JButton("관리자 페이지");
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MemberList memberlist = new MemberList();
-				memberlist.show();
+				MemberList memberList = new MemberList();
+				memberList.addFrameCloseListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent e) {
+						MemberDAO dao = MemberDAOImple.getInstance();
+						session.setDto(dao.currentUserInfo(session.getDto().getMemberID()));
+						refreshUI();
+					}
+				});
+				memberList.show();
 			}
 		});
 		btnAdmin.setBounds(688, 38, 113, 23);
@@ -241,9 +246,7 @@ public class SideMain {
 
 	}
 
-	public JFrame getMainFrame() {
-		return frame;
-	}
+
 
 	/**
 	 * ui새로고침 멤버 등급별로 쓸수 있는것을 나눠둠
@@ -269,7 +272,7 @@ public class SideMain {
 			btnAppInsert.setVisible(false);
 		} else if (session.getGrade().equals("ADMIN")) {// 관리자
 			btnAdmin.setVisible(true);
-			lblId.setText(session.getDto().getMemberID() + "님");
+			lblId.setText("관리자    " + session.getDto().getMemberID() + "님");
 			lblId.setVisible(true);
 			btnMyInfo.setVisible(true);
 			btnSignup.setVisible(false);
@@ -285,23 +288,7 @@ public class SideMain {
 	public void appTableOutput() {
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
 		appList = dao.select(); // 데이터 조회
-		int size = appList.size();
-		// ID,이름,가격,제조사,재고순
-		String[] header = { "제품 ID", "제품명", "가격", "제조사", "재고" };
-		Object[][] data = new Object[size][header.length];
-		for (int i = 0; i < size; i++) {
-			data[i][0] = appList.get(i).getApID();
-			data[i][1] = appList.get(i).getApName();
-			data[i][2] = appList.get(i).getApPrice();
-			data[i][3] = appList.get(i).getApMfr();
-			data[i][4] = appList.get(i).getApStock();
-
-		}
-		tableModel = new DefaultTableModel(data, header) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+		table();
 
 	}
 
@@ -309,19 +296,19 @@ public class SideMain {
 	 * 로그인창이 닫히면 메인클래스의 테이블을 새로고침하고 로그인 정보를 가져옴
 	 */
 	public void loginSession() {
-		if(!loginToken) {
-		Login login = new Login();
-		login.addFrameCloseListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				session = Session.getInstance();
-				refreshUI();
-				loginToken = false;
-			}
-		});
-		login.show();
-		loginToken = true;
-	}
+		if (!loginToken) {
+			Login login = new Login();
+			login.addFrameCloseListener(new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent e) {
+					session = Session.getInstance();
+					refreshUI();
+					loginToken = false;
+				}
+			});
+			login.show();
+			loginToken = true;
+		}
 	}
 
 	public void product() {
@@ -356,6 +343,16 @@ public class SideMain {
 	public void appSerch() {
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
 		appList = dao.serch("%" + textSerch.getText() + "%");
+		table();
+
+		DefaultTableModel model = (DefaultTableModel) inven.getModel();
+		model.setNumRows(0);
+		inven.setModel(tableModel);
+	}
+	
+	
+	public void table() {
+		
 		int size = appList.size();
 		String[] header = { "제품 ID", "제품명", "가격", "제조사", "재고" };
 		Object[][] data = new Object[size][header.length];
@@ -373,9 +370,6 @@ public class SideMain {
 				return false;
 			}
 		};
-
-		DefaultTableModel model = (DefaultTableModel) inven.getModel();
-		model.setNumRows(0);
-		inven.setModel(tableModel);
+		
 	}
 }// end main

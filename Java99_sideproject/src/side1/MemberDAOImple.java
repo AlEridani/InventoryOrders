@@ -35,7 +35,7 @@ public class MemberDAOImple implements MemberDAO {
 
 	private static String memberSelect = "SELECT * FROM " + TABLE_NAME;
 
-	private static String memberSession = "SELECT * FROM " + TABLE_NAME + " WHERE MEMBER_ID = ?";
+	private static String currentUserInfo = "SELECT * FROM " + TABLE_NAME + " WHERE MEMBER_ID = ?";
 
 	private static String memberDelete = "DELETE FROM " + TABLE_NAME + " WHERE MEMBER_ID = ?";
 
@@ -100,7 +100,7 @@ public class MemberDAOImple implements MemberDAO {
 			conn.close();
 			pstmt.close();
 			result = 1;
-			return result;
+			return result; 
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 			System.out.println("id가 중복 발생해서 insert문 실패");
@@ -145,14 +145,14 @@ public class MemberDAOImple implements MemberDAO {
 	}
 
 	@Override
-	public MemberDTO session(String id) {
+	public MemberDTO currentUserInfo(String id) {
 
 		 MemberDTO dto = null;
 		try {
 
 			DriverManager.registerDriver(new OracleDriver());
 			Connection conn = DriverManager.getConnection(URL, USER, PW);
-			PreparedStatement pstmt = conn.prepareStatement(memberSession);
+			PreparedStatement pstmt = conn.prepareStatement(currentUserInfo);
 
 			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();
@@ -211,7 +211,6 @@ public class MemberDAOImple implements MemberDAO {
 
 	@Override
 	public int delete(String id) {
-		//테이블 fk키때문에 안됐던거라 나중에 테이블만들떄 다시 확인
 		int result = -1;
 		try {
 			DriverManager.registerDriver(new OracleDriver());

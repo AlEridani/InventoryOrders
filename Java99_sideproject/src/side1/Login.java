@@ -92,14 +92,14 @@ public class Login {
 		char[] pw = textPw.getPassword();
 		dao = MemberDAOImple.getInstance();
 
-		MemberDTO dto = dao.session(id);
+		MemberDTO dto = dao.currentUserInfo(id);
 	    if (dto == null) {
 	        labelId.setText("해당 ID가 존재하지 않습니다.");
 	        labelId.setVisible(true);
 	        return false;
 	    }
 
-		char[] pw2 = dao.session(id).getPw();
+		char[] pw2 = dao.currentUserInfo(id).getPw();
 
 		if (textID.getText().isBlank() || pwNull(pw)) {
 			labelId.setVisible(true);
