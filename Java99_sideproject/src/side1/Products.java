@@ -5,6 +5,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -134,13 +135,13 @@ public class Products {
 		lblNewLabel_2.setBounds(144, 403, 57, 15);
 		frame.getContentPane().add(lblNewLabel_2);
 
-		JLabel lblNewLabel_3 = new JLabel(String.valueOf(dto.getApPrice() + " 원"));
-		lblNewLabel_3.setHorizontalAlignment(JLabel.RIGHT);
-		lblNewLabel_3.setFont(new Font("굴림", Font.BOLD, 15));
-		lblNewLabel_3.setBounds(255, 396, 153, 29);
-		frame.getContentPane().add(lblNewLabel_3);
+		JLabel lblPrice = new JLabel(numberFormat(dto.getApPrice()) + " 원");
+		lblPrice.setHorizontalAlignment(JLabel.RIGHT);
+		lblPrice.setFont(new Font("굴림", Font.BOLD, 15));
+		lblPrice.setBounds(255, 396, 153, 29);
+		frame.getContentPane().add(lblPrice);
 
-		JLabel lblTotalPrice = new JLabel(String.valueOf(currentValue*dto.getApPrice()) +" 원");
+		JLabel lblTotalPrice = new JLabel(numberFormat(currentValue*dto.getApPrice()) +" 원");
 		lblTotalPrice.setFont(new Font("굴림", Font.BOLD, 18));
 		lblTotalPrice.setBounds(198, 464, 210, 25);
 		frame.getContentPane().add(lblTotalPrice);
@@ -149,8 +150,8 @@ public class Products {
             @Override
             public void stateChanged(ChangeEvent e) {
                 quantity = (Integer) spinner.getValue();
-                lblTotalPrice.setText(((long)quantity * dto.getApPrice() + " 원"));
-                totalPrice = (long)quantity * dto.getApPrice();
+                lblTotalPrice.setText(longNumberFormat(quantity * (long)dto.getApPrice())+ " 원");
+                totalPrice = quantity * (long)dto.getApPrice();
             }
         });
 
@@ -165,7 +166,8 @@ public class Products {
 
 		Session session =Session.getInstance();
 		System.out.println(apDto.getApPrice());
-		totalPrice = apDto.getApPrice() * quantity;
+		totalPrice = (long)apDto.getApPrice() * quantity;
+		System.out.println("구매 메서드의 long확인 : " + totalPrice);
 		PurchaseDTO dto = new PurchaseDTO(session.getDto().getMemberID(), apDto.getApID(), quantity, totalPrice);
 		int result = dao.purchase(dto);
 		if(result == -1) {
@@ -185,5 +187,16 @@ public class Products {
 	 public void addFrameCloseListener(WindowListener listener) {
 	        frame.addWindowListener(listener);
 	    }
+	 
+		public String numberFormat(int num) {
+			String formattedPrice = NumberFormat.getNumberInstance().format(num);
+	        return formattedPrice;
+		}
+		
+		public String longNumberFormat(long num) {
+			String formattedPrice = NumberFormat.getNumberInstance().format(num);
+	        return formattedPrice;
+		}
+
 
 }//end Products

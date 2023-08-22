@@ -38,7 +38,8 @@ public class PurchaseDAOImple implements PurchaseDAO {
 	private static final String purchaseSelect = "SELECT p." + COL_DATE + ", a." + COL_APID + ", a." + COL_AP_NAME
 								+ ", a." + COL_AP_MFR + ", p." + COL_ORDER_QUANTITY + ", p." + COL_ORDER_PRICE + ", p." + COL_ORDER_NUMBER
 								+ " FROM APPLIANCE a join " + TABLE_NAME + " p" + " ON a." + COL_APID + " = p." + COL_APID + " WHERE p."
-								+ COL_SESSION_ID + " = ?";
+								+ COL_SESSION_ID + " = ?"
+								+ "ORDER BY " + COL_ORDER_NUMBER;
 
 	private static PurchaseDAOImple instance = null;
 
@@ -97,7 +98,7 @@ public class PurchaseDAOImple implements PurchaseDAO {
 				dto.setApName(rs.getString(COL_AP_NAME));
 				dto.setApMfr(rs.getString(COL_AP_MFR));
 				dto.setOrderQunatity(rs.getInt(COL_ORDER_QUANTITY));
-				dto.setOrderPrice(rs.getInt(COL_ORDER_PRICE));
+				dto.setOrderPrice(rs.getLong(COL_ORDER_PRICE));
 				dto.setMemberID(id);
 				list.add(dto);
 

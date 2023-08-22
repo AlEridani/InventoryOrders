@@ -81,19 +81,19 @@ public class Login {
 		frame.getContentPane().add(labelId);
 		labelId.setVisible(false);
 
-	}
+	}//end initialize
 
 	public void show() {
 		frame.setVisible(true);
 	}
 
-	public boolean login() {// id의 데이터 목록을 전부 불러와서 id가 중복인지 검사하기? //pass쪽에 암호리턴받는걸 중복일때 주는 단어 넣기?
+	public boolean login() {
 		id = textID.getText();
 		char[] pw = textPw.getPassword();
 		dao = MemberDAOImple.getInstance();
 
 		MemberDTO dto = dao.currentUserInfo(id);
-	    if (dto == null) {
+	    if (dto == null) {//해당 ID가 DB에 없음
 	        labelId.setText("해당 ID가 존재하지 않습니다.");
 	        labelId.setVisible(true);
 	        return false;
@@ -101,7 +101,8 @@ public class Login {
 
 		char[] pw2 = dao.currentUserInfo(id).getPw();
 
-		if (textID.getText().isBlank() || pwNull(pw)) {
+		if (id.isBlank() || pwNull(pw)) {//아이디 비밀번호 빈칸
+			labelId.setText("ID와 비밀번호를 입력해주세요");
 			labelId.setVisible(true);
 
 		} else if (Arrays.equals(pw, pw2)) {
@@ -120,7 +121,7 @@ public class Login {
 		}
 
 		return false;
-	}
+	}//end login
 
 	public boolean pwNull(char[] ch) {
 
@@ -134,9 +135,9 @@ public class Login {
 		        }
 		    }
 		return true;
-	}
+	}//end pwNull
 
 	 public void addFrameCloseListener(WindowListener listener) {
 	        frame.addWindowListener(listener);
-	    }
-}
+	    }//end addFrameCloseListener
+}//end login

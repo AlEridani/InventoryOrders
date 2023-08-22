@@ -9,7 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class SideMain {
@@ -27,7 +28,7 @@ public class SideMain {
 	private JFrame frame;
 	private JTable inven;
 	private JButton btnMyInfo;
-	static Session session;
+	private static Session session;
 	static String grade;
 
 	private JButton btnAdmin;
@@ -40,6 +41,7 @@ public class SideMain {
 	private String clickedID;
 	private boolean userInfoToken = false;
 	private boolean loginToken = false;
+	
 
 	
 
@@ -100,6 +102,7 @@ public class SideMain {
 
 		appTableOutput();
 		inven = new JTable(tableModel);
+	
 		inven.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -360,9 +363,9 @@ public class SideMain {
 			data[i][0] = appList.get(i).getApID();
 			System.out.println(appList.get(i).getApID());
 			data[i][1] = appList.get(i).getApName();
-			data[i][2] = appList.get(i).getApPrice();
+			data[i][2] = numberFormat(appList.get(i).getApPrice()) + "원";
 			data[i][3] = appList.get(i).getApMfr();
-			data[i][4] = appList.get(i).getApStock();
+			data[i][4] = appList.get(i).getApStock() + "개";
 
 		}
 		tableModel = new DefaultTableModel(data, header) {
@@ -371,5 +374,11 @@ public class SideMain {
 			}
 		};
 		
+	}//end table
+	
+	public String numberFormat(int num) {
+		String formattedPrice = NumberFormat.getNumberInstance().format(num);
+        return formattedPrice;
 	}
+
 }// end main

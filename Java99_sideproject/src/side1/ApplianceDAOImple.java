@@ -121,7 +121,7 @@ public class ApplianceDAOImple implements ApplianceDAO {
 		}
 
 		return list;
-	}
+	}//end select
 
 	@Override
 	public ArrayList<ApplianceDTO> serch(String apName) {
@@ -160,7 +160,7 @@ public class ApplianceDAOImple implements ApplianceDAO {
 		}
 
 		return list;
-	}
+	}//end serch
 
 
 
@@ -189,7 +189,7 @@ public class ApplianceDAOImple implements ApplianceDAO {
 			e.printStackTrace();
 		}
 		return result;
-	}
+	}//and appUpdate
 
 	@Override
 	public int appDelete(String apId) {
@@ -209,7 +209,7 @@ public class ApplianceDAOImple implements ApplianceDAO {
 			e.printStackTrace();
 		}
 		return result;
-	}
+	}//end appDelete
 
 	@Override
 	public ApplianceDTO appInfo(String apId) {
@@ -244,6 +244,6 @@ public class ApplianceDAOImple implements ApplianceDAO {
 
 
 		return null;
-	}
+	}//end appInfo
 
-}
+}//end ApplianceDAOImple

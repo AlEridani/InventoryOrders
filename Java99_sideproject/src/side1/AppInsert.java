@@ -31,9 +31,8 @@ public class AppInsert {
 	public AppInsert(ApplianceDTO dto) {
 		initialize2(dto);
 	}
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	
+	
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 499, 468);
@@ -103,7 +102,7 @@ public class AppInsert {
 		textStock.setColumns(10);
 		textStock.setBounds(120, 255, 82, 21);
 		frame.getContentPane().add(textStock);
-	}
+	}//end initialize
 
 	private void initialize2(ApplianceDTO dto) {
 		frame = new JFrame();
@@ -176,7 +175,7 @@ public class AppInsert {
 		textStock.setColumns(10);
 		textStock.setBounds(120, 255, 82, 21);
 		frame.getContentPane().add(textStock);
-	}
+	}//end initialize2
 
 	public void show() {
 		frame.setVisible(true);
@@ -267,4 +266,4 @@ public class AppInsert {
 	        frame.addWindowListener(listener);
 	    }//end addFrameCloseListener
 
-}
+}//end AppInsert

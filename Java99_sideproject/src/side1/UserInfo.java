@@ -4,6 +4,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -112,11 +113,11 @@ public class UserInfo {
 		frame.getContentPane().add(lblAppName);
 		
 		lblPrice = new JLabel("주문금액(총합)");
-		lblPrice.setBounds(83, 535, 147, 15);
+		lblPrice.setBounds(108, 535, 147, 15);
 		frame.getContentPane().add(lblPrice);
 		
 		lblQuantity = new JLabel("주문갯수");
-		lblQuantity.setBounds(22, 535, 57, 15);
+		lblQuantity.setBounds(22, 535, 74, 15);
 		frame.getContentPane().add(lblQuantity);
 		
 		lblOrderNumber = new JLabel("주문번호 들어가는곳");
@@ -148,6 +149,7 @@ public class UserInfo {
 		frame.setVisible(true);
 	}
 	public void showLabelRecord(Session session) {
+		//로직문제 지금 sql문을 새로가져오는게 안되는것같음
 		
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
@@ -158,8 +160,11 @@ public class UserInfo {
 			String date = sdf.format(dto.getOrderDate());
 			lblOrderDate.setText(date);
 			lblAppName.setText(dto.getApMfr() + " " + dto.getApName() + " " +dto.getApID());
-			lblPrice.setText(String.valueOf(dto.getOrderPrice()) + "원");
-			lblQuantity.setText(String.valueOf(dto.getOrderQunatity()) + "개");
+			String formattedPrice = NumberFormat.getNumberInstance().format((long)dto.getOrderPrice());
+			lblPrice.setText(formattedPrice + "원");
+			String formattedQunatity = NumberFormat.getNumberInstance().format(dto.getOrderQunatity());
+
+			lblQuantity.setText(formattedQunatity + "개");
 			lblOrderNumber.setText(String.valueOf(dto.getOrderNumber()));
 			
 		}else {
@@ -171,9 +176,7 @@ public class UserInfo {
 		}
 	}//end showLabelRecord
 	
-	
-	  public void addFrameCloseListener(WindowListener listener) {
+	 public void addFrameCloseListener(WindowListener listener) {
 	        frame.addWindowListener(listener);
 	    }//end addFrameCloseListener
-	
 }

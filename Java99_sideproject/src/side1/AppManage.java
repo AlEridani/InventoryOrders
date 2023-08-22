@@ -8,7 +8,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -127,7 +126,7 @@ public class AppManage {
 		});
 		btnNewButton_2_1_1.setBounds(349, 467, 97, 52);
 		frame.getContentPane().add(btnNewButton_2_1_1);
-	}
+	}//end initializ
 
 	public void show() {
 		frame.setVisible(true);
@@ -145,7 +144,7 @@ public class AppManage {
 		} else {
 			System.out.println("아무것도 선택안됨");
 		}
-	}
+	}//end appDelte
 
 	public void appUpdate() {
 		dto = dao.appInfo(clickedID);
@@ -168,7 +167,7 @@ public class AppManage {
 		selectOrSerch = false;
 	    list = dao.select();
 	    updateTable(list);
-	}
+	}//end tableOutput
 
 
 
@@ -177,7 +176,7 @@ public class AppManage {
 		String serchApName = "%" + textSerch.getText() + "%";
 		list = dao.serch(serchApName);
 		updateTable(list);
-	}
+	}//end appSerchByName()
 	
 
 	private void updateTable(ArrayList<ApplianceDTO> list) {

@@ -121,8 +121,7 @@ public class UserUpdate {
 		frame.setVisible(true);
 	}
 	public void update() {
-		//session에 이미 기존 모든 정보가 담겨있으니
-		//빈칸인 경우는 기존정보를 넘기는 방식으로 세개를 넘기는것
+	
 
 		char[] pw = textPw.getPassword();
 		String name = textName.getText();

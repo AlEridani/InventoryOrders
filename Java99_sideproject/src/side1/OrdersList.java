@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -13,19 +14,20 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 public class OrdersList {
 
 	private JFrame frame;
-	private int x = 20;
-	private int y = 30;
+	
+	
 	private JPanel panel;
 	private int count = 0;
 	private JButton btnNewButton;
+	private JScrollPane scrollPane;
 
 	public OrdersList() {
 		initialize();
@@ -43,6 +45,12 @@ public class OrdersList {
 			public void actionPerformed(ActionEvent e) {
 				count++;
 				Orders(count);
+				SwingUtilities.invokeLater(new Runnable() {
+				    @Override
+				    public void run() {
+				        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
+				    }
+				});
 			}
 		});
 		btnNewButton.setBounds(22, 437, 289, 23);
@@ -51,16 +59,14 @@ public class OrdersList {
 		panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 
-		int y = 30;
-		panel.setBounds(x, y, 359, 371);
+		panel.setBounds(20, 30, 359, 371);
 		frame.getContentPane().add(panel);
 
-		JScrollPane scrollPane = new JScrollPane(panel);
+		scrollPane = new JScrollPane(panel);
 		scrollPane.setBounds(2, 30, 359, 371);
 		frame.getContentPane().add(scrollPane);
-
-		JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
-		verticalBar.setValue(verticalBar.getMaximum());
+		
+		
 
 		JLabel lblNewLabel = new JLabel("주문 내역");
 		lblNewLabel.setFont(new Font("굴림", Font.BOLD, 18));
@@ -75,14 +81,13 @@ public class OrdersList {
 	}
 
 	public void Orders(int clicked) {
-
+		
 		Session session = Session.getInstance();
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
 
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		
 		int separatorSpacing = 10;
 		int size = list.size();
 
@@ -103,7 +108,8 @@ public class OrdersList {
 				panel.add(lblOerdersEnd);
 				btnNewButton.setEnabled(false);
 				break;
-			}
+			}//end if
+			
 			lblOrderNumber[i] = new JLabel("주문번호 : " + String.valueOf(list.get(i).getOrderNumber()));
 			panel.add(lblOrderNumber[i]);
 
@@ -115,8 +121,9 @@ public class OrdersList {
 			lblName[i] = new JLabel(list.get(i).getApMfr() + " " + list.get(i).getApName());
 			panel.add(lblName[i]);
 
-			lblQuantity[i] = new JLabel(
-					String.valueOf(list.get(i).getOrderQunatity()) + "개 " + list.get(i).getOrderPrice() + " 원");
+			lblQuantity[i] = new JLabel(numberFormat(list.get(i).getOrderQunatity()) + "개 " 
+			+ numberFormat((long)list.get(i).getOrderPrice())+ " 원");
+					
 			panel.add(lblQuantity[i]);
 
 			panel.add(Box.createVerticalStrut(separatorSpacing));
@@ -129,6 +136,15 @@ public class OrdersList {
 
 		panel.revalidate();
 		panel.repaint();
+	}//end orders
+	
+	public String numberFormat(long num) {
+		String formattedPrice = NumberFormat.getNumberInstance().format(num);
+        return formattedPrice;
+	}
+	public String numberFormat(int num) {
+		String formattedPrice = NumberFormat.getNumberInstance().format(num);
+        return formattedPrice;
 	}
 
 }// end OrderList

@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -74,7 +73,7 @@ public class MemberList {
 				int result = JOptionPane.showConfirmDialog(frame, "해당 회원을 삭제하겠습니까?", "멤버삭제 확인",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
-					JOptionPane.showMessageDialog(null, "회원이 삭제 되었습니다");
+					
 					userDelete();
 					reloadTable();
 				}
