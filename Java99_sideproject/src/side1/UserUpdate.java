@@ -2,6 +2,8 @@ package side1;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
@@ -21,12 +23,29 @@ public class UserUpdate {
 	private MemberDAO dao;
 	private Session session;
 	private JTextField textName;
+	private CloseListener closeListener;
+	private SideMain mainUI;
+	
+	private static UserUpdate instance = null;
 
 
+	
 	public UserUpdate() {
-		initialize();
+	    initialize();
 	}
+	
+	
 
+	public static UserUpdate getInstance() {
+		if (instance == null) {
+			instance = new UserUpdate();
+		}
+		return instance;
+	}
+	
+	public void init(SideMain mainUI) {
+	    this.mainUI = mainUI;
+	}
 	private void initialize() {
 		session = Session.getInstance();
 
@@ -34,7 +53,7 @@ public class UserUpdate {
 		frame.setBounds(100, 100, 450, 426);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		//커밋테스
+		// 커밋테스
 		JLabel lblNewLabel = new JLabel("비밀번호");
 		lblNewLabel.setBounds(36, 54, 57, 15);
 		frame.getContentPane().add(lblNewLabel);
@@ -75,9 +94,9 @@ public class UserUpdate {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-			frame.dispose();
-			UserInfo info = new UserInfo();
-			info.show();
+				frame.dispose();
+				UserInfo info = new UserInfo();
+				info.show();
 			}
 		});
 		btnNewButton_1.setBounds(255, 254, 97, 23);
@@ -86,28 +105,16 @@ public class UserUpdate {
 		JButton btnNewButton = new JButton("회원탈퇴");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = delete();
-				if(result == -1) {
-					System.out.println("삭제실패");
-				}else {
-					JOptionPane.showMessageDialog(null, "회원 탈퇴 완료되었습니다");
-					session.setDto("비회원", "nonMember");
-					frame.dispose();
-				}
-
-
-
+				delete();
 			}
 		});
 		btnNewButton.setBounds(308, 334, 97, 23);
 		frame.getContentPane().add(btnNewButton);
 
-		if(session.getGrade().equals("ADMIN")) {
+		if (session.getGrade().equals("ADMIN")) {
 			btnNewButton.setEnabled(false);
 			btnNewButton.setVisible(false);
 		}
-
-
 
 		JLabel lblNewLabel_3 = new JLabel("이름");
 		lblNewLabel_3.setBounds(36, 107, 57, 15);
@@ -117,12 +124,22 @@ public class UserUpdate {
 		textName.setBounds(105, 104, 247, 21);
 		frame.getContentPane().add(textName);
 		textName.setColumns(10);
+		
+		
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+		        notifyCloseListener();
+			}
+		});
+		
 	}
+
 	public void show() {
 		frame.setVisible(true);
 	}
+
 	public void update() {
-	
 
 		char[] pw = textPw.getPassword();
 		String name = textName.getText();
@@ -132,40 +149,73 @@ public class UserUpdate {
 		dao = MemberDAOImple.getInstance();
 		Signup sign = new Signup();
 
-
-		if(sign.pwNull(pw)) {
+		if (sign.pwNull(pw)) {
 			pw = session.getDto().getPw();
 		}
 
-		if(name.isBlank()){
+		if (name.isBlank()) {
 			name = session.getDto().getName();
 		}
 
-		if(email.isBlank()) {
+		if (email.isBlank()) {
 			email = session.getDto().getEmail();
-		}	
+		}
 
-		if(phone.isBlank()) {
+		if (phone.isBlank()) {
 			phone = session.getDto().getPhone();
 		}
-		MemberDTO dto = new MemberDTO(session.getDto().getMemberID(),pw,name,email,phone);
+		MemberDTO dto = new MemberDTO(session.getDto().getMemberID(), pw, name, email, phone);
 
 		dao.update(dto);
 
 	}
 
-	public int delete() {
+	public void delete() {
 		int result = -1;
 		dao = MemberDAOImple.getInstance();
 		System.out.println(session.getDto().getMemberID());
 		String id = session.getDto().getMemberID();
-		result = dao.delete(id);
+		int userDeleteResult = JOptionPane.showConfirmDialog(frame, "회원 탈퇴 하시겠습니까?", "회원 탈퇴",
+				JOptionPane.YES_NO_OPTION);
+		if (userDeleteResult == JOptionPane.YES_OPTION) {
+			result = dao.delete(id);
+			if (result == -1) {
+				JOptionPane.showMessageDialog(null, "회원탈퇴 실패");
+			} else {
+				
+					JOptionPane.showMessageDialog(null, "회원 탈퇴 완료되었습니다");
+					session.setDto("비회원", "none");
+					System.out.println("멤버 등급 확인 : " + session.getGrade());
+					mainUI = SideMain.getInstance();
+					System.out.println("메인클래스 새로고침 전");
+					mainUI.refreshUI();
+					System.out.println("메인클래스 새로고침 후");
+					frame.dispose();
+				}
+
+			
+		}
+
+	}
+
+	public void addFrameCloseListener(WindowListener listener) {
+		frame.addWindowListener(listener);
+	}// end addFrameCloseListener
 
 
-		return result;
+	public interface CloseListener {
+	    void onClose();
 	}
 	
-	 public void addFrameCloseListener(WindowListener listener) {
-	        frame.addWindowListener(listener);
-	    }//end addFrameCloseListener
+	
+
+	public void setCloseListener(CloseListener listener) {
+	    this.closeListener = listener;
+	}
+
+	private void notifyCloseListener() {
+	    if (closeListener != null) {
+	        closeListener.onClose();
+	    }
+	}
 }

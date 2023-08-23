@@ -1,5 +1,6 @@
 package side1;
 
+import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
-import java.awt.Font;
+
+import side1.UserUpdate.CloseListener;
 
 public class UserInfo {
 
@@ -62,12 +64,10 @@ public class UserInfo {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UserUpdate update = new UserUpdate();
-				update.addFrameCloseListener(new WindowAdapter() {
-					@Override
-					public void windowClosed(WindowEvent e) {
-						
-						session = session.getInstance();
-					}
+				update.setCloseListener(() -> {
+				    if (mainCloseListener != null) {
+				        mainCloseListener.onClose();
+				    }
 				});
 				update.show();
 				frame.dispose();
@@ -158,8 +158,6 @@ public class UserInfo {
 		frame.setVisible(true);
 	}
 	public void showLabelRecord(Session session) {
-		//로직문제 지금 sql문을 새로가져오는게 안되는것같음
-		
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
 		if(!list.isEmpty()) {
@@ -188,4 +186,12 @@ public class UserInfo {
 	 public void addFrameCloseListener(WindowListener listener) {
 	        frame.addWindowListener(listener);
 	    }//end addFrameCloseListener
+	 
+	 private CloseListener mainCloseListener;
+
+	 public void setMainCloseListener(CloseListener listener) {
+	     this.mainCloseListener = listener;
+	 }
+	 
+	 
 }

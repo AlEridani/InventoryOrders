@@ -88,17 +88,16 @@ public class OrdersList {
 
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		int separatorSpacing = 10;
+		int separatorSpacing = 15;
 		int size = list.size();
 
-		// 페이징
+		
 		int page = 3;
 		int start = size - 1 - (page * clicked);// 49 46 43 40 size는 50
 		int end = start - page;// 46 43 40
 
 		JLabel[] lblName = new JLabel[size];
 		JLabel[] lblOrderDate = new JLabel[size];
-
 		JLabel[] lblQuantity = new JLabel[size];
 		JLabel[] lblOrderNumber = new JLabel[size];
 		for (int i = start; i > end; i--) {

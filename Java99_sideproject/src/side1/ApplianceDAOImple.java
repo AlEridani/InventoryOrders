@@ -27,8 +27,10 @@ public class ApplianceDAOImple implements ApplianceDAO {
 	private static String appInsert = "INSERT INTO " + TABLE_NAME + " VALUES (?,?,?,?,?)";
 
 	private static String appSelect = "SELECT * FROM " + TABLE_NAME;
-
-	private static String appSerch = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_NAME + " LIKE ?";
+	//여기도 해야됨 or해서 제조사+제품명으로 검색할거임
+	private static String appSerch = "SELECT * FROM " + TABLE_NAME 
+								   + " WHERE " + COL_NAME + " LIKE ?"
+								   + " or " + COL_MFR + " LIKE ?" ;
 
 	private static String appInfo = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID + " = ?";
 
@@ -133,6 +135,7 @@ public class ApplianceDAOImple implements ApplianceDAO {
 			System.out.println("sql문 : " + appSerch);
 			System.out.println("검색text : " + apName);
 			pstmt.setString(1, apName);
+			pstmt.setString(2, apName);
 			ResultSet rs = pstmt.executeQuery();
 
 			list = new ArrayList<>();
@@ -185,7 +188,7 @@ public class ApplianceDAOImple implements ApplianceDAO {
 			conn.close();
 			return result;
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			e.printStackTrace();
 		}
 		return result;

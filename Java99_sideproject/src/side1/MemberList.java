@@ -96,7 +96,7 @@ public class MemberList {
 							JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
 						JOptionPane.showMessageDialog(null, "관리자 등록이 되었습니다");
-						memderGradeChange();
+						memderUserToAdmin();
 						if (selectOrSerch) {
 							reloadTable();
 						} else {
@@ -161,6 +161,8 @@ public class MemberList {
 		});
 		btnChangeUser.setBounds(460, 438, 110, 51);
 		frame.getContentPane().add(btnChangeUser);
+		
+		memberSelect();
 
 	}
 
@@ -190,14 +192,14 @@ public class MemberList {
 
 	}
 
-	public void memderGradeChange() {
-		MemberDTO dto = dao.currentUserInfo(clickedID);// id를 검색해서 dto에 넣는다
-		dao.memberGrade(dto);// dto의 멤버등급을 변경한다
+	public void memderUserToAdmin() {
+		MemberDTO dto = dao.currentUserInfo(clickedID);
+		dao.memberGrade(dto);
 	}
 
 	public void memderAdminToUser() {
-		MemberDTO dto = dao.currentUserInfo(clickedID);// id를 검색해서 dto에 넣는다
-		dao.memberChangeAdminToUser(dto);// dto의 멤버등급을 변경한다
+		MemberDTO dto = dao.currentUserInfo(clickedID);
+		dao.memberChangeAdminToUser(dto);
 	}
 
 	public void userDelete() {
@@ -215,7 +217,7 @@ public class MemberList {
 		Object[][] data = new Object[size][header.length];
 		for (int i = 0; i < size; i++) {
 			data[i][0] = list.get(i).getMemberID();
-			data[i][1] = list.get(i).getPw();// 암호 그대로 표시 안되게 뭉개기
+			data[i][1] = list.get(i).getPw();
 			data[i][2] = list.get(i).getName();
 			data[i][3] = list.get(i).getEmail();
 			data[i][4] = list.get(i).getPhone();

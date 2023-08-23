@@ -21,5 +21,7 @@ public interface MemberDAO {
 	public abstract int memberGrade(MemberDTO dto);
 
 	public abstract int memberChangeAdminToUser(MemberDTO dto);
+	
+
 
 }

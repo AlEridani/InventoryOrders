@@ -81,7 +81,7 @@ public class Login {
 		frame.getContentPane().add(labelId);
 		labelId.setVisible(false);
 
-	}//end initialize
+	}// end initialize
 
 	public void show() {
 		frame.setVisible(true);
@@ -89,56 +89,52 @@ public class Login {
 
 	public boolean login() {
 		id = textID.getText();
-		char[] pw 	= textPw.getPassword();
+		char[] pw = textPw.getPassword();
 		dao = MemberDAOImple.getInstance();
 
 		MemberDTO dto = dao.currentUserInfo(id);
-	    if (dto == null) {//해당 ID가 DB에 없음
-	        labelId.setText("해당 ID가 존재하지 않습니다.");
-	        labelId.setVisible(true);
-	        return false;
-	    }
+		if (dto == null) {// 해당 ID가 DB에 없음
+			labelId.setText("해당 ID가 존재하지 않습니다.");
+			labelId.setVisible(true);
+			return false;
+		}
 
 		char[] pw2 = dao.currentUserInfo(id).getPw();
 
-		if (id.isBlank() || pwNull(pw)) {//아이디 비밀번호 빈칸
+		if (id.isBlank() || pwNull(pw)) {// 아이디 비밀번호 빈칸
 			labelId.setText("ID와 비밀번호를 입력해주세요");
 			labelId.setVisible(true);
-
+			
 		} else if (Arrays.equals(pw, pw2)) {
 			System.out.println("로그인 성공");
-
 			Session session = Session.getInstance();
-
 			session.setDto(dto);
-
 			JOptionPane.showMessageDialog(null, "로그인 성공");
 			frame.dispose();
 			return true;
-		}else {
+		} else {// 비밀번호 틀림
 			labelId.setText("비밀번호를 다시 확인해주세요");
 			textPw.setText("");
 			labelId.setVisible(true);
 		}
 
 		return false;
-	}//end login
+	}// end login
 
 	public boolean pwNull(char[] ch) {
 
-		if(ch == null || ch.length == 0) {
+		if (ch == null || ch.length == 0) {
 			return true;
 		}
-
-		 for (char c : ch) {
-		        if (!Character.isWhitespace(c)) {//공백문자 찾기
-		            return false;  
-		        }
-		    }
+		for (char c : ch) {
+			if (!Character.isWhitespace(c)) {// 공백문자 찾는 기능
+				return false;
+			}
+		}
 		return true;
-	}//end pwNull
+	}// end pwNull
 
-	 public void addFrameCloseListener(WindowListener listener) {
-	        frame.addWindowListener(listener);
-	    }//end addFrameCloseListener
-}//end login
+	public void addFrameCloseListener(WindowListener listener) {
+		frame.addWindowListener(listener);
+	}// end addFrameCloseListener
+}// end login

@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import oracle.jdbc.driver.OracleDriver;
 
@@ -45,20 +48,16 @@ public class MemberDAOImple implements MemberDAO {
 											    + COL_ID + " = ?";
 
 	private static String memberAdminToUser = "UPDATE " + TABLE_NAME + " SET MANAGE_GRADE = 'USER' WHERE "
-		    + COL_ID + " = ?";
+											 + COL_ID + " = ?";
 
-	private static String memberUpdate = "UPDATE " + TABLE_NAME + "SET "
+	private static String memberUpdate = "UPDATE " + TABLE_NAME + " SET "
 										+ COL_PW + " = ?, "
 										+ COL_NAME + " = ?, "
 										+ COL_EMAIL + " = ?, "
 										+ COL_PHONE + " = ? "
 										+ "WHERE " + COL_ID + "= ?";
+	
 
-//	UPDATE MEMBER
-//	SET MANAGE_GRADE = 'ADMIN'
-//	UPDATE MEMBER 
-//	SET PW = ?, NAME = ?, EMAIL = ?, PHONE = ?
-//	WHERE MEMBER_ID = ?
 
 	private static MemberDAOImple instance = null;
 
@@ -101,11 +100,14 @@ public class MemberDAOImple implements MemberDAO {
 			pstmt.close();
 			result = 1;
 			return result; 
+		}catch (SQLIntegrityConstraintViolationException e){
+			System.out.println("아이디 중복");
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			System.out.println("id가 중복 발생해서 insert문 실패");
+			
 		}catch (Exception e) {
 			e.printStackTrace();
+			
 		}
 
 		return result;
@@ -115,7 +117,6 @@ public class MemberDAOImple implements MemberDAO {
 	public ArrayList<MemberDTO> select() {
 
 		try {
-
 
 			DriverManager.registerDriver(new OracleDriver());
 			Connection conn = DriverManager.getConnection(URL, USER, PW);
@@ -189,11 +190,12 @@ public class MemberDAOImple implements MemberDAO {
 			PreparedStatement pstmt = conn.prepareStatement(memberUpdate);
 			//인자 5개 pw,name,email,phone,id순
 			String password = new String(dto.getPw());
+	
 			pstmt.setString(1, password);
 			pstmt.setString(2, dto.getName());
 			pstmt.setString(3, dto.getEmail());
 			pstmt.setString(4, dto.getPhone());
-			pstmt.setString(3, dto.getMemberID());
+			pstmt.setString(5, dto.getMemberID());
 
 			result = pstmt.executeUpdate();
 
@@ -305,9 +307,11 @@ public class MemberDAOImple implements MemberDAO {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("어드민권한 변경 실패");
+			System.out.println("어드민 권한 변경 실패");
 		}
 
 		return result;
 	}
+
+
 }

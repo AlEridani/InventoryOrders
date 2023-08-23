@@ -20,8 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
 
 public class SideMain {
 
@@ -41,15 +41,17 @@ public class SideMain {
 	private String clickedID;
 	private boolean userInfoToken = false;
 	private boolean loginToken = false;
-	
 
-	
-
-	
 	private JButton btnAppInsert;
 	private JTextField textSerch;
-
+	private static SideMain instance = null;
 	
+	public static SideMain getInstance() {
+		if (instance == null) {
+			instance = new SideMain();
+		}
+		return instance;
+	}
 
 	public static void main(String[] args) {
 
@@ -65,6 +67,7 @@ public class SideMain {
 				}
 			}
 		});
+
 	}
 
 	public SideMain() {
@@ -90,11 +93,9 @@ public class SideMain {
 		btnSignup = new JButton("회원가입");
 		btnSignup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				Signup sign = new Signup();
-				
 				sign.show();
-				
+
 			}
 		});
 		btnSignup.setBounds(1075, 38, 97, 23);
@@ -102,7 +103,7 @@ public class SideMain {
 
 		appTableOutput();
 		inven = new JTable(tableModel);
-	
+
 		inven.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -112,7 +113,12 @@ public class SideMain {
 				System.out.println("클릭인덱스: " + clickedID);
 
 				int count = e.getClickCount();// 더블클릭시
-				if (count == 2 && isLoggedIn()) {
+
+				if (count == 2 && !isLoggedIn()) {
+					JOptionPane.showMessageDialog(null, "로그인이 필요합니다");
+				} else if (count == 2 && session.getGrade().equals("ADMIN")) {
+					JOptionPane.showMessageDialog(null, "관리자 계정을 구매 기능을 사용할 수 없습니다");
+				} else if (count == 2 && isLoggedIn()) {
 					product();
 				}
 
@@ -130,27 +136,23 @@ public class SideMain {
 		btnMyInfo = new JButton("내 정보");
 		btnMyInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					UserInfo userInfo = new UserInfo();
-					userInfo.addFrameCloseListener(new WindowAdapter() {
-						@Override
-						public void windowClosed(WindowEvent e) {
-							userInfoToken = false;
-							session.getInstance();
-							refreshUI();
-						}
-					});
-					
-					if(!userInfoToken) {
+				UserInfo userInfo = new UserInfo();
+				userInfo.setMainCloseListener(() -> {
+				    refreshUI();
+				    userInfoToken = false;
+				});
+			
+				if (!userInfoToken) {
 					userInfo.show();
 					userInfoToken = true;
-					}
-					
+				}
+
 			}
 		});
 		btnMyInfo.setBounds(1075, 38, 97, 23);
 		frame.getContentPane().add(btnMyInfo);
-		////여기 해야됨
-		btnAdmin = new JButton("관리자 페이지");
+		//// 여기 해야됨
+		btnAdmin = new JButton("유저 관리");
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MemberList memberList = new MemberList();
@@ -176,13 +178,7 @@ public class SideMain {
 		btnLogout = new JButton("로그아웃");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				session.setDto("비회원", "none");
-				session.getDto().setPw(null);
-				session.getDto().setName(null);
-				session.getDto().setEmail(null);
-				session.getDto().setPhone(null);
-				refreshUI();
-				JOptionPane.showMessageDialog(null, "로그아웃 완료");
+				userLogout();
 			}
 		});
 		btnLogout.setBounds(959, 38, 97, 23);
@@ -234,7 +230,16 @@ public class SideMain {
 		btnAdmin.setVisible(false);
 
 		refreshUI();
-
+		
+		UserUpdate update = UserUpdate.getInstance();
+		update.init(this);
+		update.addFrameCloseListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				System.out.println("실행확인");
+				refreshUI();
+			}
+		});
 	}
 
 	/**
@@ -251,14 +256,12 @@ public class SideMain {
 
 	}
 
-
-
 	/**
 	 * ui새로고침 멤버 등급별로 쓸수 있는것을 나눠둠
 	 */
 	public void refreshUI() {
-		System.out.println("Refreshing UI");
-		if (session.getGrade().equals("none")) {// 비회원
+		System.out.println("UI 새로고침");
+		if ("none".equals(session.getGrade())) {// 비회원
 			btnMyInfo.setVisible(false);
 			btnAdmin.setVisible(false);
 			btnSignup.setVisible(true);
@@ -316,6 +319,9 @@ public class SideMain {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void product() {
 		session = Session.getInstance();
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
@@ -354,8 +360,7 @@ public class SideMain {
 		model.setNumRows(0);
 		inven.setModel(tableModel);
 	}
-	
-	
+
 	public void table() {
 
 		int size = appList.size();
@@ -374,11 +379,32 @@ public class SideMain {
 				return false;
 			}
 		};
-	}//end table
-	
+	}// end table
+
 	public String numberFormat(int num) {
 		String formattedPrice = NumberFormat.getNumberInstance().format(num);
-        return formattedPrice;
+		return formattedPrice;
+	}
+
+	public void userDeleteUiRefresh() {
+		UserUpdate update = new UserUpdate();
+		update.addFrameCloseListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				System.out.println(session.getGrade());
+				refreshUI();
+			}
+		});
+	}
+
+	public void userLogout() {
+		session.setDto("비회원", "none");
+		session.getDto().setPw(null);
+		session.getDto().setName(null);
+		session.getDto().setEmail(null);
+		session.getDto().setPhone(null);
+		refreshUI();
+		JOptionPane.showMessageDialog(null, "로그아웃 완료");
 	}
 
 }// end main

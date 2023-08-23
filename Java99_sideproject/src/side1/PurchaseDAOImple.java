@@ -69,7 +69,7 @@ public class PurchaseDAOImple implements PurchaseDAO {
 			
 			pstmt.close();
 			conn.close();
-
+			
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -109,6 +109,7 @@ public class PurchaseDAOImple implements PurchaseDAO {
 			conn.close();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return list;
