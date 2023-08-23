@@ -8,10 +8,9 @@ public class MemberDTO {
 	private String phone;
 	private String memberGrade;
 
-
 	public MemberDTO() {}
 
-	public MemberDTO(String memberID, char[] pw, String name, String email, String phone) {	
+	public MemberDTO(String memberID, char[] pw, String name, String email, String phone) {
 		this.memberID = memberID;
 		this.pw = pw;
 		this.name = name;
@@ -19,11 +18,10 @@ public class MemberDTO {
 		this.phone = phone;
 	}
 
-	public MemberDTO(String memberID, String memberGrade) {	
+	public MemberDTO(String memberID, String memberGrade) {
 		this.memberID = memberID;
 		this.memberGrade = memberGrade;
-	}//초기 비회원 상태 설정용 맴버 권한 변경용
-
+	}// 초기 비회원 상태 설정용 맴버 권한 변경용
 
 	public String getMemberID() {
 		return memberID;
@@ -72,6 +70,5 @@ public class MemberDTO {
 	public void setMemberGrade(String memberGrade) {
 		this.memberGrade = memberGrade;
 	}
-
 
 }

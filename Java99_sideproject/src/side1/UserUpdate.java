@@ -25,16 +25,12 @@ public class UserUpdate {
 	private JTextField textName;
 	private CloseListener closeListener;
 	private SideMain mainUI;
-	
+
 	private static UserUpdate instance = null;
 
-
-	
 	public UserUpdate() {
-	    initialize();
+		initialize();
 	}
-	
-	
 
 	public static UserUpdate getInstance() {
 		if (instance == null) {
@@ -42,10 +38,11 @@ public class UserUpdate {
 		}
 		return instance;
 	}
-	
+
 	public void init(SideMain mainUI) {
-	    this.mainUI = mainUI;
+		this.mainUI = mainUI;
 	}
+
 	private void initialize() {
 		session = Session.getInstance();
 
@@ -93,7 +90,6 @@ public class UserUpdate {
 		JButton btnNewButton_1 = new JButton("취소");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				frame.dispose();
 				UserInfo info = new UserInfo();
 				info.show();
@@ -124,15 +120,14 @@ public class UserUpdate {
 		textName.setBounds(105, 104, 247, 21);
 		frame.getContentPane().add(textName);
 		textName.setColumns(10);
-		
-		
+
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-		        notifyCloseListener();
+				notifyCloseListener();
 			}
 		});
-		
+
 	}
 
 	public void show() {
@@ -182,18 +177,17 @@ public class UserUpdate {
 			if (result == -1) {
 				JOptionPane.showMessageDialog(null, "회원탈퇴 실패");
 			} else {
-				
-					JOptionPane.showMessageDialog(null, "회원 탈퇴 완료되었습니다");
-					session.setDto("비회원", "none");
-					System.out.println("멤버 등급 확인 : " + session.getGrade());
-					mainUI = SideMain.getInstance();
-					System.out.println("메인클래스 새로고침 전");
-					mainUI.refreshUI();
-					System.out.println("메인클래스 새로고침 후");
-					frame.dispose();
-				}
 
-			
+				JOptionPane.showMessageDialog(null, "회원 탈퇴 완료되었습니다");
+				session.setDto("비회원", "none");
+				System.out.println("멤버 등급 확인 : " + session.getGrade());
+				mainUI = SideMain.getInstance();
+				System.out.println("메인클래스 새로고침 전");
+				mainUI.refreshUI();
+				System.out.println("메인클래스 새로고침 후");
+				frame.dispose();
+			}
+
 		}
 
 	}
@@ -202,20 +196,17 @@ public class UserUpdate {
 		frame.addWindowListener(listener);
 	}// end addFrameCloseListener
 
-
 	public interface CloseListener {
-	    void onClose();
+		void onClose();
 	}
-	
-	
 
 	public void setCloseListener(CloseListener listener) {
-	    this.closeListener = listener;
+		this.closeListener = listener;
 	}
 
 	private void notifyCloseListener() {
-	    if (closeListener != null) {
-	        closeListener.onClose();
-	    }
+		if (closeListener != null) {
+			closeListener.onClose();
+		}
 	}
 }

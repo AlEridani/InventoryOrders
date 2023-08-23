@@ -22,7 +22,6 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
-
 public class SideMain {
 
 	private JFrame frame;
@@ -39,13 +38,14 @@ public class SideMain {
 	private ArrayList<ApplianceDTO> appList;
 	private DefaultTableModel tableModel;
 	private String clickedID;
-	private boolean userInfoToken = false;
-	private boolean loginToken = false;
+	private boolean userInfoIsOpen = false;
+	private boolean loginIsOpen = false;
+	private boolean signupIsOpen = false;
 
 	private JButton btnAppInsert;
 	private JTextField textSerch;
 	private static SideMain instance = null;
-	
+
 	public static SideMain getInstance() {
 		if (instance == null) {
 			instance = new SideMain();
@@ -53,18 +53,18 @@ public class SideMain {
 		return instance;
 	}
 
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 
 		session = session.getInstance();
 		session.setDto("비회원", "none");
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SideMain window = new SideMain();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+
+			try {
+				SideMain window = new SideMain();
+				window.frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 
@@ -94,8 +94,17 @@ public class SideMain {
 		btnSignup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Signup sign = new Signup();
-				sign.show();
-
+				sign.addFrameCloseListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent e) {
+						signupIsOpen = false;
+					}
+				});
+				if(!signupIsOpen) {
+					sign.show();
+					signupIsOpen = true;
+				}
+				
 			}
 		});
 		btnSignup.setBounds(1075, 38, 97, 23);
@@ -137,14 +146,18 @@ public class SideMain {
 		btnMyInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UserInfo userInfo = new UserInfo();
-				userInfo.setMainCloseListener(() -> {
-				    refreshUI();
-				    userInfoToken = false;
+				userInfo.addFrameCloseListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent e) {
+						userInfoIsOpen = false;
+					}
 				});
-			
-				if (!userInfoToken) {
+				userInfo.setMainCloseListener(() -> {
+					refreshUI();
+				});
+				if (!userInfoIsOpen) {
 					userInfo.show();
-					userInfoToken = true;
+					userInfoIsOpen = true;
 				}
 
 			}
@@ -209,7 +222,6 @@ public class SideMain {
 		JButton btnNewButton_1 = new JButton("검색");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				appSerch();
 
 			}
@@ -231,16 +243,8 @@ public class SideMain {
 
 		refreshUI();
 		
-		UserUpdate update = UserUpdate.getInstance();
-		update.init(this);
-		update.addFrameCloseListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				System.out.println("실행확인");
-				refreshUI();
-			}
-		});
 	}
+
 
 	/**
 	 * 로그인 상태를 확인하는 메서드 세션의 등급을 확인해서 멤버 등급이 비회원인 none이면 false 아니면 true
@@ -304,18 +308,18 @@ public class SideMain {
 	 * 로그인창이 닫히면 메인클래스의 테이블을 새로고침하고 로그인 정보를 가져옴
 	 */
 	public void loginSession() {
-		if (!loginToken) {
+		if (!loginIsOpen) {
 			Login login = new Login();
 			login.addFrameCloseListener(new WindowAdapter() {
 				@Override
 				public void windowClosed(WindowEvent e) {
 					session = Session.getInstance();
 					refreshUI();
-					loginToken = false;
+					loginIsOpen = false;
 				}
 			});
 			login.show();
-			loginToken = true;
+			loginIsOpen = true;
 		}
 	}
 
@@ -361,6 +365,7 @@ public class SideMain {
 		inven.setModel(tableModel);
 	}
 
+	@SuppressWarnings("serial")
 	public void table() {
 
 		int size = appList.size();
@@ -391,7 +396,6 @@ public class SideMain {
 		update.addFrameCloseListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				System.out.println(session.getGrade());
 				refreshUI();
 			}
 		});
@@ -406,5 +410,7 @@ public class SideMain {
 		refreshUI();
 		JOptionPane.showMessageDialog(null, "로그아웃 완료");
 	}
+	
+
 
 }// end main

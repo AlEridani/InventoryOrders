@@ -10,11 +10,11 @@ import oracle.jdbc.driver.OracleDriver;
 
 public class PurchaseDAOImple implements PurchaseDAO {
 
-	private static final String TABLE_NAME = "PURCHASE";
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 	private static final String USER = "side2";
 	private static final String PW = "side22";
-
+	
+	private static final String TABLE_NAME = "PURCHASE";
 	private static final String COL_ORDER_NUMBER = "ORDER_NUMBER";
 	private static final String COL_ORDER_NUMBER_SQE = "SEQ1.NEXTVAL";
 	private static final String COL_SESSION_ID = "MEMBER_ID";
@@ -36,10 +36,10 @@ public class PurchaseDAOImple implements PurchaseDAO {
 
 	
 	private static final String purchaseSelect = "SELECT p." + COL_DATE + ", a." + COL_APID + ", a." + COL_AP_NAME
-								+ ", a." + COL_AP_MFR + ", p." + COL_ORDER_QUANTITY + ", p." + COL_ORDER_PRICE + ", p." + COL_ORDER_NUMBER
-								+ " FROM APPLIANCE a join " + TABLE_NAME + " p" + " ON a." + COL_APID + " = p." + COL_APID + " WHERE p."
-								+ COL_SESSION_ID + " = ?"
-								+ "ORDER BY " + COL_ORDER_NUMBER;
+												+ ", a." + COL_AP_MFR + ", p." + COL_ORDER_QUANTITY + ", p." + COL_ORDER_PRICE + ", p." + COL_ORDER_NUMBER
+												+ " FROM APPLIANCE a join " + TABLE_NAME + " p" + " ON a." + COL_APID + " = p." + COL_APID + " WHERE p."
+												+ COL_SESSION_ID + " = ?"
+												+ "ORDER BY " + COL_ORDER_NUMBER;
 
 	private static PurchaseDAOImple instance = null;
 
@@ -81,7 +81,6 @@ public class PurchaseDAOImple implements PurchaseDAO {
 	@Override
 	public ArrayList<PurchaseDTO> purchaseRecord(String id) {
 		ArrayList<PurchaseDTO> list = new ArrayList<>();
-
 		try {
 			DriverManager.registerDriver(new OracleDriver());
 			Connection conn = DriverManager.getConnection(URL, USER, PW);

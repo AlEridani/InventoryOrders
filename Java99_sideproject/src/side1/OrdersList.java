@@ -22,8 +22,7 @@ import javax.swing.WindowConstants;
 public class OrdersList {
 
 	private JFrame frame;
-	
-	
+
 	private JPanel panel;
 	private int count = 0;
 	private JButton btnNewButton;
@@ -45,12 +44,10 @@ public class OrdersList {
 			public void actionPerformed(ActionEvent e) {
 				count++;
 				Orders(count);
-				SwingUtilities.invokeLater(new Runnable() {
-				    @Override
-				    public void run() {
-				        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
-				    }
-				});
+				SwingUtilities.invokeLater(() ->
+				scrollPane.getVerticalScrollBar().
+				setValue(scrollPane.getVerticalScrollBar().getMaximum())
+				);
 			}
 		});
 		btnNewButton.setBounds(22, 437, 289, 23);
@@ -65,8 +62,6 @@ public class OrdersList {
 		scrollPane = new JScrollPane(panel);
 		scrollPane.setBounds(2, 30, 359, 371);
 		frame.getContentPane().add(scrollPane);
-		
-		
 
 		JLabel lblNewLabel = new JLabel("주문 내역");
 		lblNewLabel.setFont(new Font("굴림", Font.BOLD, 18));
@@ -81,7 +76,7 @@ public class OrdersList {
 	}
 
 	public void Orders(int clicked) {
-		
+
 		Session session = Session.getInstance();
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
@@ -91,7 +86,6 @@ public class OrdersList {
 		int separatorSpacing = 15;
 		int size = list.size();
 
-		
 		int page = 3;
 		int start = size - 1 - (page * clicked);// 49 46 43 40 size는 50
 		int end = start - page;// 46 43 40
@@ -107,8 +101,8 @@ public class OrdersList {
 				panel.add(lblOerdersEnd);
 				btnNewButton.setEnabled(false);
 				break;
-			}//end if
-			
+			} // end if
+
 			lblOrderNumber[i] = new JLabel("주문번호 : " + String.valueOf(list.get(i).getOrderNumber()));
 			panel.add(lblOrderNumber[i]);
 
@@ -120,9 +114,9 @@ public class OrdersList {
 			lblName[i] = new JLabel(list.get(i).getApMfr() + " " + list.get(i).getApName());
 			panel.add(lblName[i]);
 
-			lblQuantity[i] = new JLabel(numberFormat(list.get(i).getOrderQunatity()) + "개 " 
-			+ numberFormat((long)list.get(i).getOrderPrice())+ " 원");
-					
+			lblQuantity[i] = new JLabel(numberFormat(list.get(i).getOrderQunatity()) + "개 "
+					+ numberFormat((long) list.get(i).getOrderPrice()) + " 원");
+
 			panel.add(lblQuantity[i]);
 
 			panel.add(Box.createVerticalStrut(separatorSpacing));
@@ -135,15 +129,16 @@ public class OrdersList {
 
 		panel.revalidate();
 		panel.repaint();
-	}//end orders
-	
+	}// end orders
+
 	public String numberFormat(long num) {
 		String formattedPrice = NumberFormat.getNumberInstance().format(num);
-        return formattedPrice;
+		return formattedPrice;
 	}
+
 	public String numberFormat(int num) {
 		String formattedPrice = NumberFormat.getNumberInstance().format(num);
-        return formattedPrice;
+		return formattedPrice;
 	}
 
 }// end OrderList

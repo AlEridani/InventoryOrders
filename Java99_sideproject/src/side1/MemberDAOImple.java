@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
 
 import oracle.jdbc.driver.OracleDriver;
 
@@ -32,9 +31,6 @@ public class MemberDAOImple implements MemberDAO {
 	// 5.PHONE
 	private static String memberInsert = "INSERT INTO " + TABLE_NAME + "(" + COL_ID + ", " + COL_PW + ", " + COL_NAME
 			+ ", " + COL_EMAIL + ", " + COL_PHONE + ")" + " VALUES (?, ?, ?, ?, ?)";
-	// INSERT INTO MEMBER(MEMBER_ID ,PW,NAME, EMAIL,PHONE)
-	// VALUES(?, ?, ?, ?, ?)
-	private static String memberLogin = "SELECT " + COL_PW + " FROM " + TABLE_NAME + " WHERE " + COL_ID + " = ?";
 
 	private static String memberSelect = "SELECT * FROM " + TABLE_NAME;
 

@@ -23,6 +23,7 @@ public class AppManage {
 
 	private JFrame frame;
 	private JTable table;
+	@SuppressWarnings("unused")
 	private DefaultTableModel tableModel;
 	private ArrayList<ApplianceDTO> list;
 	private ApplianceDAO dao;
@@ -57,9 +58,9 @@ public class AppManage {
 				insert.addFrameCloseListener(new WindowAdapter() {
 					@Override
 					public void windowClosed(WindowEvent e) {
-						if(!selectOrSerch) {
-						tableOutput();
-						}else {
+						if (!selectOrSerch) {
+							tableOutput();
+						} else {
 							appSerchByName();
 						}
 					}
@@ -126,12 +127,11 @@ public class AppManage {
 		});
 		btnNewButton_2_1_1.setBounds(349, 467, 97, 52);
 		frame.getContentPane().add(btnNewButton_2_1_1);
-	}//end initializ
+	}// end initializ
 
 	public void show() {
 		frame.setVisible(true);
 	}
-
 
 	public void appDelete() {
 		if (!(clickedID == null)) {
@@ -144,7 +144,7 @@ public class AppManage {
 		} else {
 			System.out.println("아무것도 선택안됨");
 		}
-	}//end appDelte
+	}// end appDelte
 
 	public void appUpdate() {
 		dto = dao.appInfo(clickedID);
@@ -153,11 +153,11 @@ public class AppManage {
 		appInsert.addFrameCloseListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				if(!selectOrSerch) {
+				if (!selectOrSerch) {
 					tableOutput();
-					}else {
-						appSerchByName();
-					}
+				} else {
+					appSerchByName();
+				}
 			}
 		});
 		appInsert.show();
@@ -165,48 +165,44 @@ public class AppManage {
 
 	public void tableOutput() {
 		selectOrSerch = false;
-	    list = dao.select();
-	    updateTable(list);
-	}//end tableOutput
-
-
+		list = dao.select();
+		updateTable(list);
+	}// end tableOutput
 
 	public void appSerchByName() {
 		selectOrSerch = true;
 		String serchApName = "%" + textSerch.getText() + "%";
 		list = dao.serch(serchApName);
 		updateTable(list);
-	}//end appSerchByName()
-	
+	}// end appSerchByName()
 
+	@SuppressWarnings("serial")
 	private void updateTable(ArrayList<ApplianceDTO> list) {
-	    String[] header = { "제품 ID", "제품명", "가격", "제조사", "재고" };
-	    Object[][] data = new Object[list.size()][header.length];
-	    for (int i = 0; i < list.size(); i++) {
-	        data[i][0] = list.get(i).getApID();
-	        data[i][1] = list.get(i).getApName();
-	        data[i][2] = list.get(i).getApPrice();
-	        data[i][3] = list.get(i).getApMfr();
-	        data[i][4] = list.get(i).getApStock();
-	    }
+		String[] header = { "제품 ID", "제품명", "가격", "제조사", "재고" };
+		Object[][] data = new Object[list.size()][header.length];
+		for (int i = 0; i < list.size(); i++) {
+			data[i][0] = list.get(i).getApID();
+			data[i][1] = list.get(i).getApName();
+			data[i][2] = list.get(i).getApPrice();
+			data[i][3] = list.get(i).getApMfr();
+			data[i][4] = list.get(i).getApStock();
+		}
 
-	    DefaultTableModel tableModel = new DefaultTableModel(data, header) {
-	        @Override
-	        public boolean isCellEditable(int row, int column) {
-	            return false;
-	        }
-	    };
+		DefaultTableModel tableModel = new DefaultTableModel(data, header) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 
-	    if (table == null) {
-	        table = new JTable(tableModel);
-	    } else {
-	        table.setModel(tableModel);
-	    }
-	
-	}//end updateTable
+		if (table == null) {
+			table = new JTable(tableModel);
+		} else {
+			table.setModel(tableModel);
+		}
 
+	}// end updateTable
 
-	
 	public void addFrameCloseListener(WindowListener listener) {
 		frame.addWindowListener(listener);
 	}// end addFrameCloseListener

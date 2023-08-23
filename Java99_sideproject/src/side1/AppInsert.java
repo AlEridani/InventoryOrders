@@ -19,20 +19,15 @@ public class AppInsert {
 	private JTextField textApPrice;
 	private JTextField textApMfr;
 	private JTextField textStock;
-	
-	
-
 
 	public AppInsert() {
-
 		initialize();
 	}
 
 	public AppInsert(ApplianceDTO dto) {
 		initialize2(dto);
 	}
-	
-	
+
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 499, 468);
@@ -63,7 +58,7 @@ public class AppInsert {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ApInsert();
-				
+
 			}
 		});
 		btnNewButton.setBounds(257, 381, 97, 23);
@@ -102,7 +97,7 @@ public class AppInsert {
 		textStock.setColumns(10);
 		textStock.setBounds(120, 255, 82, 21);
 		frame.getContentPane().add(textStock);
-	}//end initialize
+	}// end initialize
 
 	private void initialize2(ApplianceDTO dto) {
 		frame = new JFrame();
@@ -113,7 +108,6 @@ public class AppInsert {
 		JLabel lblNewLabel = new JLabel("상품번호");
 		lblNewLabel.setBounds(51, 48, 57, 15);
 		frame.getContentPane().add(lblNewLabel);
-
 
 		JLabel lblNewLabel_1 = new JLabel("상품이름");
 		lblNewLabel_1.setBounds(51, 112, 57, 15);
@@ -175,7 +169,7 @@ public class AppInsert {
 		textStock.setColumns(10);
 		textStock.setBounds(120, 255, 82, 21);
 		frame.getContentPane().add(textStock);
-	}//end initialize2
+	}// end initialize2
 
 	public void show() {
 		frame.setVisible(true);
@@ -208,7 +202,7 @@ public class AppInsert {
 			}
 		}
 
-	}//end ApInsert
+	}// end ApInsert
 
 	public int stringToInteger(String str) {
 		for (int i = 0; i < str.length(); i++) {
@@ -223,8 +217,7 @@ public class AppInsert {
 		}
 		return -1;
 
-	}//end StringToInteger
-
+	}// end StringToInteger
 
 	public void appUpdate() {
 		int result;
@@ -236,7 +229,6 @@ public class AppInsert {
 
 		int price = stringToInteger(apPrice);
 		int stock = stringToInteger(apStock);
-
 
 		if (price == -1 || stock == -1) {
 			System.out.println("가격 재고 잘못입력");
@@ -258,12 +250,10 @@ public class AppInsert {
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
 		dao.appUpdate(dto);
 
+	}// end appUpdate
 
+	public void addFrameCloseListener(WindowListener listener) {
+		frame.addWindowListener(listener);
+	}// end addFrameCloseListener
 
-	}//end appUpdate
-
-	  public void addFrameCloseListener(WindowListener listener) {
-	        frame.addWindowListener(listener);
-	    }//end addFrameCloseListener
-
-}//end AppInsert
+}// end AppInsert

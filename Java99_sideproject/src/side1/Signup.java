@@ -1,5 +1,6 @@
 package side1;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,7 +18,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import java.awt.Color;
 
 public class Signup {
 
@@ -34,7 +35,6 @@ public class Signup {
 	private JRadioButton rbtnAccept;
 	private JRadioButton rbtnDecl;
 	private JButton btnNewButton_1;
-	private int duplicateId = -1;
 	private boolean buttonClickedCheck = false;
 	private JLabel lblCheckedId;
 
@@ -42,9 +42,6 @@ public class Signup {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {// 약관동의 프레임
 		frame = new JFrame();
 		frame.setBounds(100, 100, 927, 768);
@@ -117,23 +114,45 @@ public class Signup {
 		btnNewButton_1 = new JButton("회원가입");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-				signupFrame();
+				frame.setVisible(false);
+				frame2.setVisible(true);
 
 			}
 		});
-		btnNewButton_1.setBounds(672, 659, 181, 48);
+		btnNewButton_1.setBounds(443, 659, 181, 48);
 		frame.getContentPane().add(btnNewButton_1);
 		btnNewButton_1.setEnabled(false);
 
+		JButton btnNewButton_1_1 = new JButton("취소");
+		btnNewButton_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
+
+		btnNewButton_1_1.setBounds(672, 659, 181, 48);
+		frame.getContentPane().add(btnNewButton_1_1);
+
+		JCheckBox chckbxNewCheckBox = new JCheckBox("모든 약관에 동의합니다");
+		chckbxNewCheckBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rbtnAccept.setSelected(true);
+				rbtnSignAccept.setSelected(true);
+				rbtnChecked();
+
+			}
+		});
+		chckbxNewCheckBox.setBounds(43, 617, 258, 23);
+		frame.getContentPane().add(chckbxNewCheckBox);
+		signupFrame();
 	}
 
 	public void signupFrame() {// 회원가입 프레임
 		frame2 = new JFrame();
+		frame2.setVisible(false);
 		frame2.setBounds(100, 100, 474, 464);
 		frame2.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame2.getContentPane().setLayout(null);
-		frame2.setVisible(true);
 
 		JLabel lblNewLabel = new JLabel("회원가입");
 		lblNewLabel.setBounds(201, 20, 57, 15);
@@ -184,14 +203,14 @@ public class Signup {
 					lblCheckedId.setText("사용 가능한 아이디 입니다");
 					lblCheckedId.setFont(new Font("굴림", Font.BOLD, 15));
 					lblCheckedId.setForeground(Color.BLACK);
-				} else if(result == -1){
+				} else if (result == -1) {
 					buttonClickedCheck = false;
 					lblCheckedId.setVisible(true);
 					lblCheckedId.setForeground(Color.RED);
 					lblCheckedId.setFont(new Font("굴림", Font.BOLD, 15));
 					lblCheckedId.setText("이미 사용중인 아이디 입니다");
-					
-				} else if(result == -2){
+
+				} else if (result == -2) {
 					buttonClickedCheck = false;
 					lblCheckedId.setVisible(true);
 					lblCheckedId.setForeground(Color.RED);
@@ -286,7 +305,8 @@ public class Signup {
 
 	public void addFrameCloseListener(WindowListener listener) {
 		frame.addWindowListener(listener);
-	}// end addFrameCloseListener
+		frame2.addWindowListener(listener);
+	}// end addFrameCloseListenerForFrame
 
 	public void rbtnChecked() {// 라디오 버튼 체크
 		if (!rbtnSignAccept.isSelected() || !rbtnAccept.isSelected()) {
@@ -297,9 +317,7 @@ public class Signup {
 	}
 
 	/**
-	 * 아이디 중복검사 text박스의 아이디를 불러서 확인 비교후 사용가능하면 1리턴
-	 * 사용불가능하면 -1
-	 * 아이디가 빈칸이면 -2 리턴
+	 * 아이디 중복검사 text박스의 아이디를 불러서 확인 비교후 사용가능하면 1리턴 사용불가능하면 -1 아이디가 빈칸이면 -2 리턴
 	 * 
 	 */
 	public int idcheck() {
@@ -308,8 +326,8 @@ public class Signup {
 		System.out.println("idcheck 확인 : " + id);
 		dao = MemberDAOImple.getInstance();
 		ArrayList<MemberDTO> list = dao.select();
-		
-		if(id.isBlank()) {
+
+		if (id.isBlank()) {
 			result = -2;
 			return result;
 		}

@@ -150,18 +150,18 @@ public class MemberList {
 							} else {
 								memberSerch();
 							}
-						}//end (result == JOptionPane.YES_OPTION)
+						} // end (result == JOptionPane.YES_OPTION)
 
-					}//end clickedGrade.equals("ADMIN")
-					//end !isOnlyAdmin()// 관리자 계정이 하나임
-				}else {
+					} // end clickedGrade.equals("ADMIN")
+						// end !isOnlyAdmin()// 관리자 계정이 하나임
+				} else {
 					JOptionPane.showMessageDialog(null, "관리자 계정이 하나 남아서 권한을 삭제할 수 없습니다");
 				}
-			}//end actionPerformed
+			}// end actionPerformed
 		});
 		btnChangeUser.setBounds(460, 438, 110, 51);
 		frame.getContentPane().add(btnChangeUser);
-		
+
 		memberSelect();
 
 	}
@@ -211,6 +211,7 @@ public class MemberList {
 		}
 	}
 
+	@SuppressWarnings("serial")
 	public void table() {
 		int size = list.size();
 		String[] header = { "ID", "비밀번호", "이름", "EMAIL", "PHONE", "회원등급" };

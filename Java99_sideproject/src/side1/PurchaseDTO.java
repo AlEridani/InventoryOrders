@@ -9,12 +9,12 @@ public class PurchaseDTO {
 	private String apName;
 	private String apMfr;
 
-
 	private int orderQunatity;
 	private long orderPrice;
 	private Date orderDate;
 
-	public PurchaseDTO() {}
+	public PurchaseDTO() {
+	}
 
 	public PurchaseDTO(String memberID, String apID, int orderQunatity, long orderPrice) {
 		this.memberID = memberID;
@@ -72,9 +72,6 @@ public class PurchaseDTO {
 		this.orderDate = orderDate;
 	}
 
-
-
-	
 	@Override
 	public String toString() {
 		return "PurchaseDTO [orderNumber=" + orderNumber + ", memberID=" + memberID + ", apID=" + apID + ", apName="
@@ -97,7 +94,5 @@ public class PurchaseDTO {
 	public void setApMfr(String apMfr) {
 		this.apMfr = apMfr;
 	}
-
-
 
 }

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
-import java.sql.Array;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -104,7 +103,7 @@ public class Login {
 		if (id.isBlank() || pwNull(pw)) {// 아이디 비밀번호 빈칸
 			labelId.setText("ID와 비밀번호를 입력해주세요");
 			labelId.setVisible(true);
-			
+
 		} else if (Arrays.equals(pw, pw2)) {
 			System.out.println("로그인 성공");
 			Session session = Session.getInstance();
