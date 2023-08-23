@@ -43,7 +43,7 @@ public class OrdersList {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				count++;
-				Orders(count);
+				ordersHistory(count);
 				SwingUtilities.invokeLater(() ->
 				scrollPane.getVerticalScrollBar().
 				setValue(scrollPane.getVerticalScrollBar().getMaximum())
@@ -68,14 +68,14 @@ public class OrdersList {
 		lblNewLabel.setBounds(12, 10, 161, 18);
 		frame.getContentPane().add(lblNewLabel);
 
-		Orders(count);
+		ordersHistory(count);
 	}
 
 	public void show() {
 		frame.setVisible(true);
 	}
 
-	public void Orders(int clicked) {
+	public void ordersHistory(int clicked) {
 
 		Session session = Session.getInstance();
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();

@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -56,6 +57,10 @@ public class UserInfo {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UserUpdate update = new UserUpdate();
+				update.addFrameCloseListener(new WindowAdapter() {
+					Session session = Session.getInstance();
+					
+				});
 				update.setCloseListener(() -> {
 					if (mainCloseListener != null) {
 						mainCloseListener.onClose();
@@ -138,11 +143,12 @@ public class UserInfo {
 	}
 
 	public void show() {
-		showLabelRecord(session);
+		lastOrderHistory(session);
 		frame.setVisible(true);
 	}
-
-	public void showLabelRecord(Session session) {
+	
+	//구매기록을 3개단위로 출력
+	public void lastOrderHistory(Session session) {
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
 		if (!list.isEmpty()) {
@@ -155,7 +161,6 @@ public class UserInfo {
 			String formattedPrice = NumberFormat.getNumberInstance().format((long) dto.getOrderPrice());
 			lblPrice.setText(formattedPrice + "원");
 			String formattedQunatity = NumberFormat.getNumberInstance().format(dto.getOrderQunatity());
-
 			lblQuantity.setText(formattedQunatity + "개");
 			lblOrderNumber.setText(String.valueOf(dto.getOrderNumber()));
 

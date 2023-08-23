@@ -24,7 +24,7 @@ public class AppInsert {
 		initialize();
 	}
 
-	public AppInsert(ApplianceDTO dto) {
+	public AppInsert(ApplianceDTO dto) {//수정용 데이터 가져오기
 		initialize2(dto);
 	}
 
@@ -176,81 +176,72 @@ public class AppInsert {
 	}
 
 	public void ApInsert() {
-		int result;
-		String apID = textApId.getText();
-		String apName = textApName.getText();
-		String apPrice = textApPrice.getText();
-		String apMfr = textApMfr.getText();
-		String apStock = textStock.getText();
-
-		int price = stringToInteger(apPrice);
-		int stock = stringToInteger(apStock);
-
-		if (price == -1 || stock == -1) {
-			System.out.println("가격 재고 잘못입력");
-			JOptionPane.showMessageDialog(null, "재고입력이 잘못되었습니다");
-		} else {
-			ApplianceDTO dto = new ApplianceDTO(apID, apName, price, apMfr, stock);
-			ApplianceDAO dao = ApplianceDAOImple.getInstance();
-			result = dao.appInsert(dto);
-			if (result == -1) {
-				JOptionPane.showMessageDialog(null, "등록실패");
-
-			} else {
-				JOptionPane.showMessageDialog(null, "등록성공");
-				frame.dispose();
-			}
-		}
-
-	}// end ApInsert
-
-	public int stringToInteger(String str) {
-		for (int i = 0; i < str.length(); i++) {
-			char ch = str.charAt(i);
-			if (Character.isDigit(ch)) {
-				int convertInt = Integer.parseInt(str);
-				if (convertInt >= 0) {
-					return convertInt;
-				}
-			}
-
-		}
-		return -1;
-
-	}// end StringToInteger
+	    ApplianceDTO dto = appDataInput();
+	    if (dto != null) {
+	        ApplianceDAO dao = ApplianceDAOImple.getInstance();
+	        int result = dao.appInsert(dto);
+	        if (result == -1) {
+	            JOptionPane.showMessageDialog(null, "등록실패");
+	        } else {
+	            JOptionPane.showMessageDialog(null, "등록성공");
+	            frame.dispose();
+	        }
+	    }
+	}//end ApInsert
 
 	public void appUpdate() {
-		int result;
-		String apId = textApId.getText();
-		String apName = textApName.getText();
-		String apPrice = textApPrice.getText();
-		String apMfr = textApMfr.getText();
-		String apStock = textStock.getText();
+	    ApplianceDTO dto = appDataInput();
+	    if (dto != null) {
+	        ApplianceDAO dao = ApplianceDAOImple.getInstance();
+	        int result = dao.appUpdate(dto);
+	        if (result == -1) {
+	            JOptionPane.showMessageDialog(null, "수정 실패");
+	        } else {
+	            JOptionPane.showMessageDialog(null, "수정 성공");
+	            frame.dispose();
+	        }
+	    }
+	}//end appUpdate
+	
+	/**
+	 * Insert와 Update가 너무 겹쳐서 겹치는부분 빼둠
+	 * @return
+	 */
+	
+	private ApplianceDTO appDataInput() {
+	    String apId = textApId.getText();
+	    String apName = textApName.getText();
+	    String apPrice = textApPrice.getText();
+	    String apMfr = textApMfr.getText();
+	    String apStock = textStock.getText();
 
-		int price = stringToInteger(apPrice);
-		int stock = stringToInteger(apStock);
+	    int price = stringToInteger(apPrice);
+	    int stock = stringToInteger(apStock);
 
-		if (price == -1 || stock == -1) {
-			System.out.println("가격 재고 잘못입력");
-			JOptionPane.showMessageDialog(null, "재고입력이 잘못되었습니다");
-		} else {
-			ApplianceDTO dto = new ApplianceDTO(apId, apName, price, apMfr, stock);
-			ApplianceDAO dao = ApplianceDAOImple.getInstance();
-			result = dao.appUpdate(dto);
-			if (result == -1) {
-				JOptionPane.showMessageDialog(null, "수정 실패");
-			} else {
-				JOptionPane.showMessageDialog(null, "수정 성공");
-
-				frame.dispose();
+	    if (price == -1 || stock == -1) {
+	        System.out.println("가격 재고 잘못입력");
+	        JOptionPane.showMessageDialog(null, "재고입력이 잘못되었습니다");
+	        return null;
+	    } else {
+	        return new ApplianceDTO(apId, apName, price, apMfr, stock);
+	    }
+	}
+	
+	
+	
+	
+	/**
+	 * 텍스트필드의 입력된값이 String으로 들어와서 숫자만 있는 문자열이면 integer형으로 리턴
+	 * 아닐경우 -1 리턴
+	 */
+	public int stringToInteger(String str) {
+		for (int i = 0; i < str.length(); i++) {
+			if (!Character.isDigit(str.charAt(i))) {
+				return -1;
 			}
 		}
-
-		ApplianceDTO dto = new ApplianceDTO(apId, apName, price, apMfr, stock);
-		ApplianceDAO dao = ApplianceDAOImple.getInstance();
-		dao.appUpdate(dto);
-
-	}// end appUpdate
+		return Integer.parseInt(str);
+	}// end StringToInteger
 
 	public void addFrameCloseListener(WindowListener listener) {
 		frame.addWindowListener(listener);

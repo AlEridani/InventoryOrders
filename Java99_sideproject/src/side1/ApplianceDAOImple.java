@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import oracle.jdbc.driver.OracleDriver;
 
 public class ApplianceDAOImple implements ApplianceDAO {
@@ -81,8 +83,10 @@ public class ApplianceDAOImple implements ApplianceDAO {
 
 			return result;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+		
+			
 		}
 
 

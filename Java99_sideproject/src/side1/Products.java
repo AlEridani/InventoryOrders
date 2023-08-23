@@ -67,7 +67,7 @@ public class Products {
 		JButton btnNewButton = new JButton("구입");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PurchaseProduct(dto);
+				purchaseProcess(dto);
 				System.out.println("구입버튼 누른후 끝나는시점");
 			}
 		});
@@ -157,8 +157,11 @@ public class Products {
 	public void show() {
 		frame.setVisible(true);
 	}// end show
-
-	public void PurchaseProduct(ApplianceDTO apDto) {
+	/**
+	 * 
+	 * 
+	 */
+	public void purchaseProcess(ApplianceDTO apDto) {
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 
 		Session session = Session.getInstance();

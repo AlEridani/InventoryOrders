@@ -121,7 +121,6 @@ public class Login {
 	}// end login
 
 	public boolean pwNull(char[] ch) {
-
 		if (ch == null || ch.length == 0) {
 			return true;
 		}

@@ -135,7 +135,7 @@ public class UserUpdate {
 	}
 
 	public void update() {
-
+		int result = -1;
 		char[] pw = textPw.getPassword();
 		String name = textName.getText();
 		String email = textEmail.getText();
@@ -151,20 +151,23 @@ public class UserUpdate {
 		if (name.isBlank()) {
 			name = session.getDto().getName();
 		}
-
 		if (email.isBlank()) {
 			email = session.getDto().getEmail();
 		}
-
 		if (phone.isBlank()) {
 			phone = session.getDto().getPhone();
 		}
 		MemberDTO dto = new MemberDTO(session.getDto().getMemberID(), pw, name, email, phone);
-
-		dao.update(dto);
+		result = dao.update(dto);
+		if(result == 1) {
+			JOptionPane.showMessageDialog(null, "수정 성공");
+			session.setDto(dto);
+		}else {
+			JOptionPane.showMessageDialog(null, "수정에 실패했습니다");
+		}
 
 	}
-
+	//회원탈퇴
 	public void delete() {
 		int result = -1;
 		dao = MemberDAOImple.getInstance();
@@ -183,7 +186,7 @@ public class UserUpdate {
 				System.out.println("멤버 등급 확인 : " + session.getGrade());
 				mainUI = SideMain.getInstance();
 				System.out.println("메인클래스 새로고침 전");
-				mainUI.refreshUI();
+				mainUI.setUIVisibilByRole();
 				System.out.println("메인클래스 새로고침 후");
 				frame.dispose();
 			}

@@ -83,7 +83,7 @@ public class SideMain {
 		btnNewButton = new JButton("로그인");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loginSession();
+				openLogin();
 
 			}
 		});
@@ -128,7 +128,7 @@ public class SideMain {
 				} else if (count == 2 && session.getGrade().equals("ADMIN")) {
 					JOptionPane.showMessageDialog(null, "관리자 계정을 구매 기능을 사용할 수 없습니다");
 				} else if (count == 2 && isLoggedIn()) {
-					product();
+					showProductForPurchase();
 				}
 
 			}
@@ -153,7 +153,7 @@ public class SideMain {
 					}
 				});
 				userInfo.setMainCloseListener(() -> {
-					refreshUI();
+					setUIVisibilByRole();
 				});
 				if (!userInfoIsOpen) {
 					userInfo.show();
@@ -164,7 +164,7 @@ public class SideMain {
 		});
 		btnMyInfo.setBounds(1075, 38, 97, 23);
 		frame.getContentPane().add(btnMyInfo);
-		//// 여기 해야됨
+		
 		btnAdmin = new JButton("유저 관리");
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -174,7 +174,7 @@ public class SideMain {
 					public void windowClosed(WindowEvent e) {
 						MemberDAO dao = MemberDAOImple.getInstance();
 						session.setDto(dao.currentUserInfo(session.getDto().getMemberID()));
-						refreshUI();
+						setUIVisibilByRole();
 					}
 				});
 				memberList.show();
@@ -241,7 +241,7 @@ public class SideMain {
 		frame.getContentPane().add(lblNewLabel);
 		btnAdmin.setVisible(false);
 
-		refreshUI();
+		setUIVisibilByRole();
 		
 	}
 
@@ -261,9 +261,9 @@ public class SideMain {
 	}
 
 	/**
-	 * ui새로고침 멤버 등급별로 쓸수 있는것을 나눠둠
+	 * ui를 멤버 등급별로 쓸수 있는것을 나눠둠
 	 */
-	public void refreshUI() {
+	public void setUIVisibilByRole() {
 		System.out.println("UI 새로고침");
 		if ("none".equals(session.getGrade())) {// 비회원
 			btnMyInfo.setVisible(false);
@@ -297,24 +297,20 @@ public class SideMain {
 		frame.repaint();
 	}
 
-	public void appTableOutput() {
-		ApplianceDAO dao = ApplianceDAOImple.getInstance();
-		appList = dao.select(); // 데이터 조회
-		table();
 
-	}
 
 	/**
-	 * 로그인창이 닫히면 메인클래스의 테이블을 새로고침하고 로그인 정보를 가져옴
+	 * 로그인창을 열고
+	 * 로그인창이 닫히면 메인클래스의 테이블을 새로고침 하고 로그인 정보를 가져옴
 	 */
-	public void loginSession() {
+	public void openLogin() {
 		if (!loginIsOpen) {
 			Login login = new Login();
 			login.addFrameCloseListener(new WindowAdapter() {
 				@Override
 				public void windowClosed(WindowEvent e) {
 					session = Session.getInstance();
-					refreshUI();
+					setUIVisibilByRole();
 					loginIsOpen = false;
 				}
 			});
@@ -324,9 +320,10 @@ public class SideMain {
 	}
 
 	/**
-	 * 
+	 * 제품의 제고가 있으면 구매창을 띄우는 기능 창이 닫히면 메인 테이블에
+	 * 변한 ui상태(재고)를 새로고침
 	 */
-	public void product() {
+	public void showProductForPurchase() {
 		session = Session.getInstance();
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
 		ApplianceDTO dto = dao.appInfo(clickedID);
@@ -337,7 +334,6 @@ public class SideMain {
 				public void windowClosed(WindowEvent e) {
 					session = Session.getInstance();
 					appTableRefresh();
-
 				}
 			});
 			product.show();
@@ -346,15 +342,25 @@ public class SideMain {
 		}
 
 	}
+	
+	//전자제품 테이블 첫 출력
+	public void appTableOutput() {
+		ApplianceDAO dao = ApplianceDAOImple.getInstance();
+		appList = dao.select(); // 데이터 조회
+		table();
 
+	}
+	
+	//전자제품 테이블 새로고침
 	public void appTableRefresh() {
 		DefaultTableModel model = (DefaultTableModel) inven.getModel();
 		model.setNumRows(0);
 		appTableOutput();
 		inven.setModel(tableModel);
-
+		
 	}// end refresh
-
+	
+	//텍스트필드의 문자여을 가져와서 출력
 	public void appSerch() {
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
 		appList = dao.serch("%" + textSerch.getText() + "%");
@@ -364,7 +370,9 @@ public class SideMain {
 		model.setNumRows(0);
 		inven.setModel(tableModel);
 	}
-
+	
+	
+	//테이블만 보여주는 기능
 	@SuppressWarnings("serial")
 	public void table() {
 
@@ -390,27 +398,16 @@ public class SideMain {
 		String formattedPrice = NumberFormat.getNumberInstance().format(num);
 		return formattedPrice;
 	}
-
-	public void userDeleteUiRefresh() {
-		UserUpdate update = new UserUpdate();
-		update.addFrameCloseListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				refreshUI();
-			}
-		});
-	}
-
+	//로그아웃 ui 새로 고침
 	public void userLogout() {
 		session.setDto("비회원", "none");
 		session.getDto().setPw(null);
 		session.getDto().setName(null);
 		session.getDto().setEmail(null);
 		session.getDto().setPhone(null);
-		refreshUI();
+		setUIVisibilByRole();
 		JOptionPane.showMessageDialog(null, "로그아웃 완료");
 	}
 	
-
 
 }// end main
