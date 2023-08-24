@@ -34,12 +34,21 @@ public class PurchaseDAOImple implements PurchaseDAO {
 											 + " VALUES (" 
 								             + COL_ORDER_NUMBER_SQE + ", ?, ?, ?, ?)";
 
-	
-	private static final String purchaseSelect = "SELECT p." + COL_DATE + ", a." + COL_APID + ", a." + COL_AP_NAME
-												+ ", a." + COL_AP_MFR + ", p." + COL_ORDER_QUANTITY + ", p." + COL_ORDER_PRICE + ", p." + COL_ORDER_NUMBER
-												+ " FROM APPLIANCE a join " + TABLE_NAME + " p" + " ON a." + COL_APID + " = p." + COL_APID + " WHERE p."
-												+ COL_SESSION_ID + " = ?"
-												+ "ORDER BY " + COL_ORDER_NUMBER;
+	//a = APPLIANCE Table
+	//p = PURCHASE Table
+	private static final String purchaseSelect = "SELECT"
+												+ " a." + COL_APID 
+												+ ", a." + COL_AP_NAME
+												+ ", a." + COL_AP_MFR 
+												+ ", p." + COL_DATE 
+												+ ", p." + COL_ORDER_QUANTITY 
+												+ ", p." + COL_ORDER_PRICE 
+												+ ", p." + COL_ORDER_NUMBER
+												+ " FROM APPLIANCE a join " 
+												+ TABLE_NAME + " p" 
+												+ " ON a." + COL_APID + " = p." + COL_APID 
+												+ " WHERE p."+ COL_SESSION_ID + " = ?"
+												+ " ORDER BY " + COL_ORDER_NUMBER;
 
 	private static PurchaseDAOImple instance = null;
 
@@ -61,6 +70,7 @@ public class PurchaseDAOImple implements PurchaseDAO {
 			DriverManager.registerDriver(new OracleDriver());
 			Connection conn = DriverManager.getConnection(URL, USER, PW);
 			PreparedStatement pstmt = conn.prepareStatement(purchaseSql);
+			System.out.println(purchaseSelect);
 			pstmt.setString(1, dto.getMemberID());
 			pstmt.setString(2, dto.getApID());
 			pstmt.setInt(3, dto.getOrderQunatity());
@@ -80,6 +90,7 @@ public class PurchaseDAOImple implements PurchaseDAO {
 
 	@Override
 	public ArrayList<PurchaseDTO> purchaseRecord(String id) {
+		System.out.println("구매기록 sql 문 실행" + purchaseSelect);
 		ArrayList<PurchaseDTO> list = new ArrayList<>();
 		try {
 			DriverManager.registerDriver(new OracleDriver());
@@ -90,8 +101,6 @@ public class PurchaseDAOImple implements PurchaseDAO {
 			while (rs.next()) {
 				PurchaseDTO dto = new PurchaseDTO();
 				dto.setOrderNumber(rs.getInt(COL_ORDER_NUMBER));
-				System.out.println("주문번호 : " + rs.getInt(COL_ORDER_NUMBER) +
-								   " 제품 이름 : " + rs.getString(COL_AP_NAME));
 				dto.setOrderDate(rs.getDate(COL_DATE));
 				dto.setApID(rs.getString(COL_APID));
 				dto.setApName(rs.getString(COL_AP_NAME));
@@ -106,7 +115,7 @@ public class PurchaseDAOImple implements PurchaseDAO {
 			rs.close();
 			pstmt.close();
 			conn.close();
-
+			System.out.println("구매기록 메서드 실행 끝");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

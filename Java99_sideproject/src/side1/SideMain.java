@@ -98,13 +98,14 @@ public class SideMain {
 					@Override
 					public void windowClosed(WindowEvent e) {
 						signupIsOpen = false;
+
 					}
 				});
-				if(!signupIsOpen) {
+				if (!signupIsOpen) {
 					sign.show();
 					signupIsOpen = true;
 				}
-				
+
 			}
 		});
 		btnSignup.setBounds(1075, 38, 97, 23);
@@ -119,9 +120,9 @@ public class SideMain {
 				int selectedRow = inven.getSelectedRow();
 				int idColumnIndex = inven.getColumnModel().getColumnIndex("제품 ID");
 				clickedID = inven.getModel().getValueAt(selectedRow, idColumnIndex).toString();
-				System.out.println("클릭인덱스: " + clickedID);
+				System.out.println("클릭 : " + clickedID);
 
-				int count = e.getClickCount();// 더블클릭시
+				int count = e.getClickCount();// 클릭횟수 기록 시간지나면 초기화 되는듯
 
 				if (count == 2 && !isLoggedIn()) {
 					JOptionPane.showMessageDialog(null, "로그인이 필요합니다");
@@ -153,7 +154,13 @@ public class SideMain {
 					}
 				});
 				userInfo.setMainCloseListener(() -> {
-					setUIVisibilByRole();
+					MemberDAO dao = MemberDAOImple.getInstance();
+					MemberDTO newDto = dao.currentUserInfo(session.getDto().getMemberID());
+					if (newDto != null) {//회원 수정일때
+						session.setDto(newDto);
+					} else {//회원 탈퇴일때
+						setUIVisibilByRole();
+					}
 				});
 				if (!userInfoIsOpen) {
 					userInfo.show();
@@ -164,7 +171,7 @@ public class SideMain {
 		});
 		btnMyInfo.setBounds(1075, 38, 97, 23);
 		frame.getContentPane().add(btnMyInfo);
-		
+
 		btnAdmin = new JButton("유저 관리");
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -242,9 +249,8 @@ public class SideMain {
 		btnAdmin.setVisible(false);
 
 		setUIVisibilByRole();
-		
-	}
 
+	}
 
 	/**
 	 * 로그인 상태를 확인하는 메서드 세션의 등급을 확인해서 멤버 등급이 비회원인 none이면 false 아니면 true
@@ -297,11 +303,8 @@ public class SideMain {
 		frame.repaint();
 	}
 
-
-
 	/**
-	 * 로그인창을 열고
-	 * 로그인창이 닫히면 메인클래스의 테이블을 새로고침 하고 로그인 정보를 가져옴
+	 * 로그인창을 열고 로그인창이 닫히면 메인클래스의 테이블을 새로고침 하고 로그인 정보를 가져옴
 	 */
 	public void openLogin() {
 		if (!loginIsOpen) {
@@ -320,8 +323,7 @@ public class SideMain {
 	}
 
 	/**
-	 * 제품의 제고가 있으면 구매창을 띄우는 기능 창이 닫히면 메인 테이블에
-	 * 변한 ui상태(재고)를 새로고침
+	 * 제품의 제고가 있으면 구매창을 띄우는 기능 창이 닫히면 메인 테이블에 변한 ui상태(재고)를 새로고침
 	 */
 	public void showProductForPurchase() {
 		session = Session.getInstance();
@@ -342,25 +344,25 @@ public class SideMain {
 		}
 
 	}
-	
-	//전자제품 테이블 첫 출력
+
+	// 전자제품 테이블 첫 출력
 	public void appTableOutput() {
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
 		appList = dao.select(); // 데이터 조회
 		table();
 
 	}
-	
-	//전자제품 테이블 새로고침
+
+	// 전자제품 테이블 새로고침
 	public void appTableRefresh() {
 		DefaultTableModel model = (DefaultTableModel) inven.getModel();
 		model.setNumRows(0);
 		appTableOutput();
 		inven.setModel(tableModel);
-		
+
 	}// end refresh
-	
-	//텍스트필드의 문자여을 가져와서 출력
+
+	// 텍스트필드의 문자여을 가져와서 출력
 	public void appSerch() {
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
 		appList = dao.serch("%" + textSerch.getText() + "%");
@@ -370,9 +372,8 @@ public class SideMain {
 		model.setNumRows(0);
 		inven.setModel(tableModel);
 	}
-	
-	
-	//테이블만 보여주는 기능
+
+	// 테이블만 보여주는 기능
 	@SuppressWarnings("serial")
 	public void table() {
 
@@ -398,7 +399,8 @@ public class SideMain {
 		String formattedPrice = NumberFormat.getNumberInstance().format(num);
 		return formattedPrice;
 	}
-	//로그아웃 ui 새로 고침
+
+	// 로그아웃 ui 새로 고침
 	public void userLogout() {
 		session.setDto("비회원", "none");
 		session.getDto().setPw(null);
@@ -408,6 +410,5 @@ public class SideMain {
 		setUIVisibilByRole();
 		JOptionPane.showMessageDialog(null, "로그아웃 완료");
 	}
-	
 
 }// end main

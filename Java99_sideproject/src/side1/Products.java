@@ -37,7 +37,7 @@ public class Products {
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("주문하기");
+		JLabel lblNewLabel = new JLabel("상품 선택");
 		lblNewLabel.setFont(new Font("굴림", Font.BOLD, 20));
 		lblNewLabel.setBounds(171, 10, 115, 64);
 		frame.getContentPane().add(lblNewLabel);
@@ -83,7 +83,7 @@ public class Products {
 		lblNewLabel_5.setBounds(144, 355, 115, 25);
 		frame.getContentPane().add(lblNewLabel_5);
 
-		JLabel lblNewLabel_6 = new JLabel("주문금액");
+		JLabel lblNewLabel_6 = new JLabel("총 N개");
 		lblNewLabel_6.setFont(new Font("굴림", Font.BOLD, 18));
 		lblNewLabel_6.setBounds(46, 464, 129, 25);
 		frame.getContentPane().add(lblNewLabel_6);

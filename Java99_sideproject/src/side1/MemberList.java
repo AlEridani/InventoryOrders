@@ -198,13 +198,17 @@ public class MemberList {
 	}
 
 	public void memderAdminToUser() {
+	
 		MemberDTO dto = dao.currentUserInfo(clickedID);
 		dao.memberChangeAdminToUser(dto);
+		
 	}
 
 	public void userDelete() {
 		MemberDTO dto = dao.currentUserInfo(clickedID);
-		if (!dto.getMemberGrade().equals("ADMIN")) {
+		if(dto == null) {
+			JOptionPane.showMessageDialog(null, "유저가 선택되지 않았습니다");
+		}else if (!dto.getMemberGrade().equals("ADMIN")) {
 			dao.delete(dto.getMemberID());
 		} else {
 			JOptionPane.showMessageDialog(null, "관리자 계정은 삭제할 수 없습니다");

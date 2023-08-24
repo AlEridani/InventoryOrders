@@ -5,6 +5,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -28,6 +29,8 @@ public class UserInfo {
 	private JLabel lblQuantity;
 	private JLabel lblOrderNumber;
 	private CloseListener mainCloseListener;
+	private JLabel lblNewLabel_6;
+	private boolean orderlistIsOpen = false;
 
 	public UserInfo() {
 		initialize();
@@ -42,14 +45,17 @@ public class UserInfo {
 		frame.getContentPane().setLayout(null);
 
 		JLabel lableName = new JLabel(session.getDto().getName());
+		lableName.setFont(new Font("굴림", Font.PLAIN, 15));
 		lableName.setBounds(105, 33, 195, 93);
 		frame.getContentPane().add(lableName);
 
 		JLabel labelphone = new JLabel(session.getDto().getPhone());
+		labelphone.setFont(new Font("굴림", Font.PLAIN, 15));
 		labelphone.setBounds(105, 183, 171, 50);
 		frame.getContentPane().add(labelphone);
 
 		JLabel labelEmail = new JLabel(session.getDto().getEmail());
+		labelEmail.setFont(new Font("굴림", Font.PLAIN, 15));
 		labelEmail.setBounds(105, 121, 171, 36);
 		frame.getContentPane().add(labelEmail);
 
@@ -57,10 +63,6 @@ public class UserInfo {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UserUpdate update = new UserUpdate();
-				update.addFrameCloseListener(new WindowAdapter() {
-					Session session = Session.getInstance();
-					
-				});
 				update.setCloseListener(() -> {
 					if (mainCloseListener != null) {
 						mainCloseListener.onClose();
@@ -75,19 +77,22 @@ public class UserInfo {
 		frame.getContentPane().add(btnNewButton);
 
 		JLabel lblNewLabel = new JLabel("이름");
-		lblNewLabel.setBounds(12, 72, 57, 15);
+		lblNewLabel.setFont(new Font("굴림", Font.PLAIN, 15));
+		lblNewLabel.setBounds(12, 72, 57, 20);
 		frame.getContentPane().add(lblNewLabel);
 
 		JLabel lblNewLabel_1 = new JLabel("이메일");
-		lblNewLabel_1.setBounds(12, 132, 57, 15);
+		lblNewLabel_1.setFont(new Font("굴림", Font.PLAIN, 15));
+		lblNewLabel_1.setBounds(12, 132, 57, 20);
 		frame.getContentPane().add(lblNewLabel_1);
 
 		JLabel lblNewLabel_2 = new JLabel("연락처");
-		lblNewLabel_2.setBounds(12, 201, 57, 15);
+		lblNewLabel_2.setFont(new Font("굴림", Font.PLAIN, 15));
+		lblNewLabel_2.setBounds(12, 201, 57, 20);
 		frame.getContentPane().add(lblNewLabel_2);
 
 		JLabel lblNewLabel_3 = new JLabel("권한");
-		lblNewLabel_3.setBounds(12, 245, 57, 15);
+		lblNewLabel_3.setBounds(12, 245, 57, 20);
 		frame.getContentPane().add(lblNewLabel_3);
 
 		JLabel lblNewLabel_4 = new JLabel(session.getGrade());
@@ -123,21 +128,31 @@ public class UserInfo {
 		frame.getContentPane().add(lblQuantity);
 
 		lblOrderNumber = new JLabel("주문번호 들어가는곳");
-		lblOrderNumber.setBounds(107, 434, 136, 15);
+		lblOrderNumber.setBounds(107, 434, 200, 23);
 		frame.getContentPane().add(lblOrderNumber);
 
 		JButton btnNewButton_1 = new JButton("주문내역 전체보기 >");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				OrdersList orderlist = new OrdersList();
-				orderlist.show();
+				orderlist.addFrameCloseListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent e) {
+						orderlistIsOpen = false;
+					}
+				});
+				if (!orderlistIsOpen) {
+					orderlistIsOpen = true;
+					orderlist.show();
+				}
 			}
 		});
 		btnNewButton_1.setBounds(0, 590, 346, 23);
 		frame.getContentPane().add(btnNewButton_1);
 
-		JLabel lblNewLabel_6 = new JLabel("주문번호");
-		lblNewLabel_6.setBounds(22, 434, 57, 15);
+		lblNewLabel_6 = new JLabel("주문번호");
+		lblNewLabel_6.setFont(new Font("Gulim", Font.PLAIN, 12));
+		lblNewLabel_6.setBounds(22, 434, 250, 23);
 		frame.getContentPane().add(lblNewLabel_6);
 
 	}
@@ -146,25 +161,34 @@ public class UserInfo {
 		lastOrderHistory(session);
 		frame.setVisible(true);
 	}
-	
-	//구매기록을 3개단위로 출력
+
+	// 최근 구매 기록
 	public void lastOrderHistory(Session session) {
 		PurchaseDAO dao = PurchaseDAOImple.getInstance();
 		ArrayList<PurchaseDTO> list = dao.purchaseRecord(session.getDto().getMemberID());
 		if (!list.isEmpty()) {
 			int size = list.size();
 			PurchaseDTO dto = list.get(size - 1);
+			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String date = sdf.format(dto.getOrderDate());
 			lblOrderDate.setText(date);
+			
 			lblAppName.setText(dto.getApMfr() + " " + dto.getApName() + " " + dto.getApID());
+			
 			String formattedPrice = NumberFormat.getNumberInstance().format((long) dto.getOrderPrice());
 			lblPrice.setText(formattedPrice + "원");
+			
 			String formattedQunatity = NumberFormat.getNumberInstance().format(dto.getOrderQunatity());
 			lblQuantity.setText(formattedQunatity + "개");
+			
 			lblOrderNumber.setText(String.valueOf(dto.getOrderNumber()));
-
+			
+			lblNewLabel_6.setText("주문번호");
+			lblNewLabel_6.setFont(new Font("Gulim", Font.PLAIN, 12));
 		} else {
+			lblNewLabel_6.setText("이전 주문 내역이 없습니다");
+			lblNewLabel_6.setFont(new Font("굴림", Font.BOLD, 18));
 			lblOrderDate.setVisible(false);
 			lblAppName.setVisible(false);
 			lblPrice.setVisible(false);

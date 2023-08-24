@@ -24,7 +24,7 @@ public class AppInsert {
 		initialize();
 	}
 
-	public AppInsert(ApplianceDTO dto) {//수정용 데이터 가져오기
+	public AppInsert(ApplianceDTO dto) {// 수정용 데이터 가져오기
 		initialize2(dto);
 	}
 
@@ -176,70 +176,75 @@ public class AppInsert {
 	}
 
 	public void ApInsert() {
-	    ApplianceDTO dto = appDataInput();
-	    if (dto != null) {
-	        ApplianceDAO dao = ApplianceDAOImple.getInstance();
-	        int result = dao.appInsert(dto);
-	        if (result == -1) {
-	            JOptionPane.showMessageDialog(null, "등록실패");
-	        } else {
-	            JOptionPane.showMessageDialog(null, "등록성공");
-	            frame.dispose();
-	        }
-	    }
-	}//end ApInsert
+		ApplianceDTO dto = appDataInput();
+		if (dto != null) {
+			ApplianceDAO dao = ApplianceDAOImple.getInstance();
+			int result = dao.appInsert(dto);
+			if (result == -1) {
+				JOptionPane.showMessageDialog(null, "등록실패");
+			} else {
+				JOptionPane.showMessageDialog(null, "등록성공");
+				frame.dispose();
+			}
+		}
+	}// end ApInsert
 
 	public void appUpdate() {
-	    ApplianceDTO dto = appDataInput();
-	    if (dto != null) {
-	        ApplianceDAO dao = ApplianceDAOImple.getInstance();
-	        int result = dao.appUpdate(dto);
-	        if (result == -1) {
-	            JOptionPane.showMessageDialog(null, "수정 실패");
-	        } else {
-	            JOptionPane.showMessageDialog(null, "수정 성공");
-	            frame.dispose();
-	        }
-	    }
-	}//end appUpdate
-	
+		ApplianceDTO dto = appDataInput();
+		if (dto != null) {
+			ApplianceDAO dao = ApplianceDAOImple.getInstance();
+			int result = dao.appUpdate(dto);
+			if (result == -1) {
+				JOptionPane.showMessageDialog(null, "수정 실패");
+			} else {
+				JOptionPane.showMessageDialog(null, "수정 성공");
+				frame.dispose();
+			}
+		}
+	}// end appUpdate
+
 	/**
 	 * Insert와 Update가 너무 겹쳐서 겹치는부분 빼둠
+	 * 
 	 * @return
 	 */
-	
+
 	private ApplianceDTO appDataInput() {
-	    String apId = textApId.getText();
-	    String apName = textApName.getText();
-	    String apPrice = textApPrice.getText();
-	    String apMfr = textApMfr.getText();
-	    String apStock = textStock.getText();
+		String apId = textApId.getText();
+		String apName = textApName.getText();
+		String apPrice = textApPrice.getText();
+		String apMfr = textApMfr.getText();
+		String apStock = textStock.getText();
 
-	    int price = stringToInteger(apPrice);
-	    int stock = stringToInteger(apStock);
-
-	    if (price == -1 || stock == -1) {
-	        System.out.println("가격 재고 잘못입력");
-	        JOptionPane.showMessageDialog(null, "재고입력이 잘못되었습니다");
-	        return null;
-	    } else {
-	        return new ApplianceDTO(apId, apName, price, apMfr, stock);
-	    }
+		int price = stringToInteger(apPrice);
+		int stock = stringToInteger(apStock);
+		if (apId.isBlank() || apName.isBlank()) {
+			JOptionPane.showMessageDialog(null, "상품번호와 상품이름은 필수적으로 입력해야합니다 ");
+		}
+		if (price == -1 || stock == -1) {
+			System.out.println("가격 재고 잘못입력");
+			JOptionPane.showMessageDialog(null, "가격과 재고에는 숫자만 들어갈 수 있습니다");
+			return null;
+		} else {
+			return new ApplianceDTO(apId, apName, price, apMfr, stock);
+		}
 	}
-	
-	
-	
-	
+
 	/**
-	 * 텍스트필드의 입력된값이 String으로 들어와서 숫자만 있는 문자열이면 integer형으로 리턴
-	 * 아닐경우 -1 리턴
+	 * 텍스트필드의 입력된값이 String으로 들어와서 숫자만 있는 문자열이면 integer형으로 리턴 아닐경우 -1 리턴
 	 */
 	public int stringToInteger(String str) {
+		System.out.println("돌려줄 리턴값 확인"+ str);
 		for (int i = 0; i < str.length(); i++) {
-			if (!Character.isDigit(str.charAt(i))) {
+			char ch = str.charAt(i);
+			if (!Character.isDigit(ch) && !Character.isWhitespace(ch)) {
 				return -1;
 			}
 		}
+		if (str.isEmpty()) {
+			return -1;
+		}
+		
 		return Integer.parseInt(str);
 	}// end StringToInteger
 

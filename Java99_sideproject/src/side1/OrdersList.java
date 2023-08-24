@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class OrdersList {
 		JLabel[] lblQuantity = new JLabel[size];
 		JLabel[] lblOrderNumber = new JLabel[size];
 		for (int i = start; i > end; i--) {
-			if (i <= 0) {
+			if (i < 0) {
 				JLabel lblOerdersEnd = new JLabel("이전 주문 내역이 없습니다");
 				lblOerdersEnd.setFont(new Font("굴림", Font.BOLD, 23));
 				panel.add(lblOerdersEnd);
@@ -141,4 +142,8 @@ public class OrdersList {
 		return formattedPrice;
 	}
 
+	
+	public void addFrameCloseListener(WindowListener listener) {
+		frame.addWindowListener(listener);
+	}// end addFrameCloseListener
 }// end OrderList

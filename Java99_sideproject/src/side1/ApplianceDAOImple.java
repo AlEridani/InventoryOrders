@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -23,20 +24,26 @@ public class ApplianceDAOImple implements ApplianceDAO {
 	private static final String COL_PRICE = "AP_PRICE";
 	private static final String COL_MFR = "AP_MFR";
 	private static final String COL_STOCK = "AP_STOCK";
+	private static final String COL_DELETED = "IS_DELETED";
 
 
 
-	private static String appInsert = "INSERT INTO " + TABLE_NAME + " VALUES (?,?,?,?,?)";
+	private static String appInsert = "INSERT INTO " + TABLE_NAME + " VALUES (?,?,?,?,?,0)";
 
-	private static String appSelect = "SELECT * FROM " + TABLE_NAME;
-	//여기도 해야됨 or해서 제조사+제품명으로 검색할거임
+	private static String appSelect = "SELECT * FROM " + TABLE_NAME + 
+									  " WHERE " + COL_DELETED +" = 0";
+	
 	private static String appSerch = "SELECT * FROM " + TABLE_NAME 
 								   + " WHERE " + COL_NAME + " LIKE ?"
-								   + " or " + COL_MFR + " LIKE ?" ;
+								   + " OR " + COL_MFR + " LIKE ?" 
+								   + " AND " + COL_DELETED + " = 0";
 
 	private static String appInfo = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID + " = ?";
 
-	private static String appDelete = "DELETE FROM " + TABLE_NAME + " WHERE " + COL_ID + " = ?";
+	
+	private static String appSoftDelte = "UPDATE " + TABLE_NAME + " SET "
+										 + COL_DELETED + " = 1 "
+										 + "WHERE " + COL_ID + " = ?";
 
 	private static String appUpdate = "UPDATE " + TABLE_NAME + " SET "
 									  + COL_NAME + " = ?, "
@@ -44,7 +51,8 @@ public class ApplianceDAOImple implements ApplianceDAO {
 									  + COL_MFR + " = ?, "
 									  + COL_STOCK + " = ? "
 									  + "WHERE AP_ID = ?";
-
+	//나중에 휴지통 기능 구현한다면 사용
+	private static String appDelete = "DELETE FROM " + TABLE_NAME + " WHERE " + COL_ID + " = ?";
 
 	private static ApplianceDAOImple instance = null;
 
@@ -71,7 +79,7 @@ public class ApplianceDAOImple implements ApplianceDAO {
 			System.out.println("실행 sql문 확인 : " + appInsert);
 			//ID,이름,가격,제조사,재고순
 			pstmt.setString(1, dto.getApID());
-			pstmt.setString(2, dto.getApName());
+			pstmt.setString(2, dto.getApName());//전부 대문자로 바꿔서 넣었어야 했음
 			pstmt.setInt(3, dto.getApPrice());
 			pstmt.setString(4, dto.getApMfr());
 			pstmt.setInt(5, dto.getApStock());
@@ -100,6 +108,7 @@ public class ApplianceDAOImple implements ApplianceDAO {
 			DriverManager.registerDriver(new OracleDriver());
 			Connection conn = DriverManager.getConnection(URL, USER, PW);
 			PreparedStatement pstmt = conn.prepareStatement(appSelect);
+			
 			ResultSet rs = pstmt.executeQuery();
 			System.out.println(appSelect);
 			list = new ArrayList<>();
@@ -204,7 +213,8 @@ public class ApplianceDAOImple implements ApplianceDAO {
 		try {
 			DriverManager.registerDriver(new OracleDriver());
 			Connection conn = DriverManager.getConnection(URL, USER, PW);
-			PreparedStatement pstmt = conn.prepareStatement(appDelete);
+			PreparedStatement pstmt = conn.prepareStatement(appSoftDelte);
+			System.out.println(appSoftDelte);
 			pstmt.setString(1, apId);
 			System.out.println("넘겨받은 문자열 확인 " + apId);
 			result = pstmt.executeUpdate();
@@ -244,10 +254,11 @@ public class ApplianceDAOImple implements ApplianceDAO {
 			pstmt.close();
 			conn.close();
 			return dto;
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("sql구문 에러");
-		}
+		} 
 
 
 		return null;

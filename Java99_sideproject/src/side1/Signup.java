@@ -37,6 +37,7 @@ public class Signup {
 	private JButton btnNewButton_1;
 	private boolean buttonClickedCheck = false;
 	private JLabel lblCheckedId;
+	private JCheckBox chckbxNewCheckBox;
 
 	public Signup() {
 		initialize();
@@ -101,6 +102,9 @@ public class Signup {
 		rbtnDecl.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				rbtnChecked();
+				if(rbtnDecl.isSelected()) {
+					chckbxNewCheckBox.setSelected(false);
+				}
 			}
 		});
 		rbtnDecl.setBounds(763, 591, 121, 23);
@@ -133,7 +137,7 @@ public class Signup {
 		btnNewButton_1_1.setBounds(672, 659, 181, 48);
 		frame.getContentPane().add(btnNewButton_1_1);
 
-		JCheckBox chckbxNewCheckBox = new JCheckBox("모든 약관에 동의합니다");
+		chckbxNewCheckBox = new JCheckBox("모든 약관에 동의합니다");
 		chckbxNewCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				rbtnAccept.setSelected(true);
@@ -192,36 +196,15 @@ public class Signup {
 		btnNewButton.setBounds(43, 357, 146, 44);
 		frame2.getContentPane().add(btnNewButton);
 
-		JButton btnDuplicateId = new JButton("중복 확인");
-		btnDuplicateId.addActionListener(new ActionListener() {
+		JButton isIdAvailable = new JButton("중복 확인");
+		isIdAvailable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = idcheck();
-				if (result == 1) {// true일때 아이디 사용가능
-					System.out.println("아이디 사용가능");
-					buttonClickedCheck = true;
-					lblCheckedId.setVisible(true);
-					lblCheckedId.setText("사용 가능한 아이디 입니다");
-					lblCheckedId.setFont(new Font("굴림", Font.BOLD, 15));
-					lblCheckedId.setForeground(Color.BLACK);
-				} else if (result == -1) {
-					buttonClickedCheck = false;
-					lblCheckedId.setVisible(true);
-					lblCheckedId.setForeground(Color.RED);
-					lblCheckedId.setFont(new Font("굴림", Font.BOLD, 15));
-					lblCheckedId.setText("이미 사용중인 아이디 입니다");
-
-				} else if (result == -2) {
-					buttonClickedCheck = false;
-					lblCheckedId.setVisible(true);
-					lblCheckedId.setForeground(Color.RED);
-					lblCheckedId.setFont(new Font("굴림", Font.BOLD, 15));
-					lblCheckedId.setText("아이디를 입력해주세요");
-				}
+				idcheck();
 			}
 		});
 
-		btnDuplicateId.setBounds(336, 71, 99, 22);
-		frame2.getContentPane().add(btnDuplicateId);
+		isIdAvailable.setBounds(336, 71, 99, 22);
+		frame2.getContentPane().add(isIdAvailable);
 
 		textId = new JTextField();
 		textId.setBounds(122, 72, 198, 21);
@@ -317,27 +300,48 @@ public class Signup {
 	}
 
 	/**
-	 * 아이디 중복검사 text박스의 아이디를 불러서 확인 비교후 사용가능하면 1리턴 사용불가능하면 -1 아이디가 빈칸이면 -2 리턴
+	 * 아이디 중복검사 text박스의 아이디를 불러서 확인 비교후 사용가능하면 1리턴 사용불가능하면 -1 아이디가 빈칸이면 -2
 	 * 
 	 */
-	public int idcheck() {
+	public void idcheck() {
 		int result = 1;
 		String id = textId.getText();
 		System.out.println("idcheck 확인 : " + id);
 		dao = MemberDAOImple.getInstance();
 		ArrayList<MemberDTO> list = dao.select();
 
-		if (id.isBlank()) {
+		if (id.isBlank()) {//아이디 공백시 
 			result = -2;
-			return result;
+		} else {
+			for (int i = 0; i < list.size(); i++) {
+				System.out.println("DB의 아이디 순환 확인 :" + list.get(i).getMemberID());
+				if (list.get(i).getMemberID().equals(id)) {// 아이디 순회해서 중복 있으면 false반환
+					result = -1;
+				}//end if
+			}//end for
+		}//end else
+		if (result == 1) {// true일때 아이디 사용가능
+			System.out.println("아이디 사용가능");
+			buttonClickedCheck = true;
+			lblCheckedId.setVisible(true);
+			lblCheckedId.setText("사용 가능한 아이디 입니다");
+			lblCheckedId.setFont(new Font("굴림", Font.BOLD, 15));
+			lblCheckedId.setForeground(Color.BLACK);
+		} else if (result == -1) {// 아이디 중복
+			buttonClickedCheck = false;
+			lblCheckedId.setVisible(true);
+			lblCheckedId.setForeground(Color.RED);
+			lblCheckedId.setFont(new Font("굴림", Font.BOLD, 15));
+			lblCheckedId.setText("이미 사용중인 아이디 입니다");
+
+		} else if (result == -2) {// 입력칸 공백
+			buttonClickedCheck = false;
+			lblCheckedId.setVisible(true);
+			lblCheckedId.setForeground(Color.RED);
+			lblCheckedId.setFont(new Font("굴림", Font.BOLD, 15));
+			lblCheckedId.setText("아이디를 입력해주세요");
 		}
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println("DB의 아이디 순환 확인 :" + list.get(i).getMemberID());
-			if (list.get(i).getMemberID().equals(id)) {// 아이디 순회해서 중복 있으면 false반환
-				result = -1;
-				return result;
-			}
-		}
-		return result;
+
+	
 	}
 }

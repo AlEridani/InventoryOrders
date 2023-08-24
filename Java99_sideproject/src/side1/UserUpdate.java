@@ -81,6 +81,8 @@ public class UserUpdate {
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				update();
+				UserInfo userInfo = new UserInfo();
+				userInfo.show();
 				frame.dispose();
 			}
 		});
@@ -147,7 +149,6 @@ public class UserUpdate {
 		if (sign.pwNull(pw)) {
 			pw = session.getDto().getPw();
 		}
-
 		if (name.isBlank()) {
 			name = session.getDto().getName();
 		}
@@ -161,7 +162,9 @@ public class UserUpdate {
 		result = dao.update(dto);
 		if(result == 1) {
 			JOptionPane.showMessageDialog(null, "수정 성공");
+			dto.setMemberGrade(session.getGrade());
 			session.setDto(dto);
+			
 		}else {
 			JOptionPane.showMessageDialog(null, "수정에 실패했습니다");
 		}
@@ -172,22 +175,18 @@ public class UserUpdate {
 		int result = -1;
 		dao = MemberDAOImple.getInstance();
 		System.out.println(session.getDto().getMemberID());
-		String id = session.getDto().getMemberID();
+		String id = session.getDto().getMemberID();//회원탈퇴를 위한 id 가져오기
 		int userDeleteResult = JOptionPane.showConfirmDialog(frame, "회원 탈퇴 하시겠습니까?", "회원 탈퇴",
 				JOptionPane.YES_NO_OPTION);
 		if (userDeleteResult == JOptionPane.YES_OPTION) {
-			result = dao.delete(id);
+			result = dao.delete(id);//삭제
 			if (result == -1) {
 				JOptionPane.showMessageDialog(null, "회원탈퇴 실패");
 			} else {
-
-				JOptionPane.showMessageDialog(null, "회원 탈퇴 완료되었습니다");
 				session.setDto("비회원", "none");
 				System.out.println("멤버 등급 확인 : " + session.getGrade());
 				mainUI = SideMain.getInstance();
-				System.out.println("메인클래스 새로고침 전");
 				mainUI.setUIVisibilByRole();
-				System.out.println("메인클래스 새로고침 후");
 				frame.dispose();
 			}
 
