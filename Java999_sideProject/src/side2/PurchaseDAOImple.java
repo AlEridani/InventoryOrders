@@ -1,4 +1,4 @@
-package side1;
+package side2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +11,7 @@ import oracle.jdbc.driver.OracleDriver;
 public class PurchaseDAOImple implements PurchaseDAO {
 
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String USER = "side2";
+	private static final String USER = "side3";
 	private static final String PW = "123";
 	
 	private static final String TABLE_NAME = "PURCHASE";

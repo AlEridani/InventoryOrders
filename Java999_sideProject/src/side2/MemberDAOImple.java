@@ -1,4 +1,4 @@
-package side1;
+package side2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +15,7 @@ public class MemberDAOImple implements MemberDAO {
 
 	private static final String TABLE_NAME = "MEMBER";
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String USER = "side2";
+	private static final String USER = "side3";
 	private static final String PW = "123";
 	private static final String COL_ID = "MEMBER_ID";
 	private static final String COL_PW = "PW";
@@ -30,7 +30,7 @@ public class MemberDAOImple implements MemberDAO {
 	// 4.EMAIL
 	// 5.PHONE
 	private static String memberInsert = "INSERT INTO " + TABLE_NAME + "(" + COL_ID + ", " + COL_PW + ", " + COL_NAME
-			+ ", " + COL_EMAIL + ", " + COL_PHONE + ")" + " VALUES (?, ?, ?, ?, ?)";
+			+ ", " + COL_EMAIL + ", " + COL_PHONE + ")" + " VALUES (?, ?, ?, ?, ?,?)";
 
 	private static String memberSelect = "SELECT * FROM " + TABLE_NAME;
 
@@ -78,7 +78,7 @@ public class MemberDAOImple implements MemberDAO {
 		try {
 			DriverManager.registerDriver(new OracleDriver());
 			Connection conn = DriverManager.getConnection(URL, USER, PW);
-			PreparedStatement pstmt = conn.prepareStatement(memberInsert);//인서트 실패일때 
+			PreparedStatement pstmt = conn.prepareStatement(memberInsert);
 			String password = new String(dto.getPw());
 			System.out.println(memberInsert);
 
@@ -88,13 +88,13 @@ public class MemberDAOImple implements MemberDAO {
 			pstmt.setString(4, dto.getEmail());
 			pstmt.setString(5, dto.getPhone());
 
-			pstmt.executeUpdate();
+			result = pstmt.executeUpdate();
 
 			System.out.println("데이터 등록 성공");
 
 			conn.close();
 			pstmt.close();
-			result = 1;
+			
 			return result; 
 		}catch (SQLIntegrityConstraintViolationException e){
 			System.out.println("아이디 중복");

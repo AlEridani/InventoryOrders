@@ -1,4 +1,4 @@
-package side1;
+package side2;
 
 import java.awt.Font;
 import java.awt.SystemColor;
@@ -30,7 +30,7 @@ public class Products {
 	}
 
 	private void initialize(Session session, ApplianceDTO dto) {
-		quantity = dto.getApPrice();
+//		quantity = dto.getApPrice();
 		quantity = 1;
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 648);
@@ -67,7 +67,7 @@ public class Products {
 		JButton btnNewButton = new JButton("구입");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				purchaseProcess(dto);
+//				purchaseProcess(dto);
 				System.out.println("구입버튼 누른후 끝나는시점");
 			}
 		});
@@ -92,7 +92,7 @@ public class Products {
 		lblMfr.setBounds(32, 340, 143, 15);
 		frame.getContentPane().add(lblMfr);
 
-		JLabel lblApId = new JLabel(dto.getApID());
+		JLabel lblApId = new JLabel(String.valueOf(getApID()));
 		lblApId.setBounds(32, 315, 194, 15);
 		frame.getContentPane().add(lblApId);
 
@@ -121,37 +121,42 @@ public class Products {
 		btnNewButton_1.setBounds(328, 124, 80, 23);
 		frame.getContentPane().add(btnNewButton_1);
 
-		int maxStock = dto.getApStock();
+//		int maxStock = dto.getApStock();
 
-		JSpinner spinner = new JSpinner(new SpinnerNumberModel(1, 1, maxStock, 1));
-		spinner.setBounds(331, 356, 77, 24);
-		frame.getContentPane().add(spinner);
-		Integer currentValue = (Integer) spinner.getValue();
+//		JSpinner spinner = new JSpinner(new SpinnerNumberModel(1, 1, maxStock, 1));
+//		spinner.setBounds(331, 356, 77, 24);
+//		frame.getContentPane().add(spinner);
+//		Integer currentValue = (Integer) spinner.getValue();
 
-		JLabel lblNewLabel_2 = new JLabel("가격");
-		lblNewLabel_2.setBounds(144, 403, 57, 15);
-		frame.getContentPane().add(lblNewLabel_2);
+//		JLabel lblNewLabel_2 = new JLabel("가격");
+//		lblNewLabel_2.setBounds(144, 403, 57, 15);
+//		frame.getContentPane().add(lblNewLabel_2);
 
-		JLabel lblPrice = new JLabel(numberFormat(dto.getApPrice()) + " 원");
-		lblPrice.setHorizontalAlignment(JLabel.RIGHT);
-		lblPrice.setFont(new Font("굴림", Font.BOLD, 15));
-		lblPrice.setBounds(255, 396, 153, 29);
-		frame.getContentPane().add(lblPrice);
+//		JLabel lblPrice = new JLabel(numberFormat(dto.getApPrice()) + " 원");
+//		lblPrice.setHorizontalAlignment(JLabel.RIGHT);
+//		lblPrice.setFont(new Font("굴림", Font.BOLD, 15));
+//		lblPrice.setBounds(255, 396, 153, 29);
+//		frame.getContentPane().add(lblPrice);
 
-		JLabel lblTotalPrice = new JLabel(numberFormat(currentValue * dto.getApPrice()) + " 원");
-		lblTotalPrice.setFont(new Font("굴림", Font.BOLD, 18));
-		lblTotalPrice.setBounds(198, 464, 210, 25);
-		frame.getContentPane().add(lblTotalPrice);
-		lblTotalPrice.setHorizontalAlignment(JLabel.RIGHT);
-		spinner.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				quantity = (Integer) spinner.getValue();
-				lblTotalPrice.setText(longNumberFormat(quantity * (long) dto.getApPrice()) + " 원");
-				totalPrice = quantity * (long) dto.getApPrice();
-			}
-		});
+//		JLabel lblTotalPrice = new JLabel(numberFormat(currentValue * dto.getApPrice()) + " 원");
+//		lblTotalPrice.setFont(new Font("굴림", Font.BOLD, 18));
+//		lblTotalPrice.setBounds(198, 464, 210, 25);
+//		frame.getContentPane().add(lblTotalPrice);
+//		lblTotalPrice.setHorizontalAlignment(JLabel.RIGHT);
+//		spinner.addChangeListener(new ChangeListener() {
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				quantity = (Integer) spinner.getValue();
+//				lblTotalPrice.setText(longNumberFormat(quantity * (long) dto.getApPrice()) + " 원");
+//				totalPrice = quantity * (long) dto.getApPrice();
+//			}
+//		});
+//
+	}
 
+	private char[] getApID() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public void show() {
@@ -161,28 +166,28 @@ public class Products {
 	 * 
 	 * 
 	 */
-	public void purchaseProcess(ApplianceDTO apDto) {
-		PurchaseDAO dao = PurchaseDAOImple.getInstance();
-
-		Session session = Session.getInstance();
-		System.out.println(apDto.getApPrice());
-		totalPrice = (long) apDto.getApPrice() * quantity;
-		System.out.println("구매 메서드의 long확인 : " + totalPrice);
-		PurchaseDTO dto = new PurchaseDTO(session.getDto().getMemberID(), apDto.getApID(), quantity, totalPrice);
-		int result = dao.purchase(dto);
-		if (result == -1) {
-			JOptionPane.showMessageDialog(null, "구매 실패");
-		} else {
-			JOptionPane.showMessageDialog(null, "구매 성공");
-			apDto.setApStock(apDto.getApStock() - quantity);
-
-			ApplianceDAO apDao = ApplianceDAOImple.getInstance();
-			apDao.appUpdate(apDto);
-			System.out.println("스톡에서 빼기");
-			frame.dispose();
-		}
-
-	}// end
+//	public void purchaseProcess(ApplianceDTO apDto) {
+//		PurchaseDAO dao = PurchaseDAOImple.getInstance();
+//
+//		Session session = Session.getInstance();
+//		System.out.println(apDto.getApPrice());
+//		totalPrice = (long) apDto.getApPrice() * quantity;
+//		System.out.println("구매 메서드의 long확인 : " + totalPrice);
+//		PurchaseDTO dto = new PurchaseDTO(session.getDto().getMemberID(), apDto.getApID(), quantity, totalPrice);
+//		int result = dao.purchase(dto);
+//		if (result == -1) {
+//			JOptionPane.showMessageDialog(null, "구매 실패");
+//		} else {
+//			JOptionPane.showMessageDialog(null, "구매 성공");
+//			apDto.setApStock(apDto.getApStock() - quantity);
+//
+//			ApplianceDAO apDao = ApplianceDAOImple.getInstance();
+//			apDao.appUpdate(apDto);
+//			System.out.println("스톡에서 빼기");
+//			frame.dispose();
+//		}
+//
+//	}// end
 
 	public void addFrameCloseListener(WindowListener listener) {
 		frame.addWindowListener(listener);

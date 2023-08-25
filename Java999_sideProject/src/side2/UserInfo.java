@@ -1,4 +1,4 @@
-package side1;
+package side2;
 
 import java.awt.Font;
 import java.awt.SystemColor;
@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
 
-import side1.UserUpdate.CloseListener;
+import side2.UserUpdate.CloseListener;
 
 public class UserInfo {
 
