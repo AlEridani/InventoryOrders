@@ -8,8 +8,11 @@ public interface OptionDAO {
 	
 	public abstract ArrayList<OptionDTO> select ();
 	
-	public abstract OptionDTO output(String OptionId);
+	public abstract int update(OptionDTO dto);
 	
 	public abstract int delete (String optionId);
+	
+	//apid가 같은 모든것 찾는거
+	public abstract ArrayList<OptionDTO> serchByApId(int apId);
 
 }

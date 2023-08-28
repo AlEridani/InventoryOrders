@@ -30,7 +30,7 @@ public class MemberDAOImple implements MemberDAO {
 	// 4.EMAIL
 	// 5.PHONE
 	private static String memberInsert = "INSERT INTO " + TABLE_NAME + "(" + COL_ID + ", " + COL_PW + ", " + COL_NAME
-			+ ", " + COL_EMAIL + ", " + COL_PHONE + ")" + " VALUES (?, ?, ?, ?, ?,?)";
+			+ ", " + COL_EMAIL + ", " + COL_PHONE + ")" + " VALUES (?, ?, ?, ?, ?)";
 
 	private static String memberSelect = "SELECT * FROM " + TABLE_NAME;
 

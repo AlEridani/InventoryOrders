@@ -6,7 +6,9 @@ public interface ApplianceDAO {
 
 	public abstract int appInsert(ApplianceDTO dto);
 
-	public abstract ArrayList<ApplianceDTO> select ();
+	public abstract ArrayList<ApplianceDTO> select();
+	
+	public abstract ArrayList<ApplianceDTO> tableSelect();
 
 	public abstract ArrayList<ApplianceDTO> serch(String apName);
 

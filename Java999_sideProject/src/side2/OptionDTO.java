@@ -2,20 +2,33 @@ package side2;
 
 public class OptionDTO {
 	private String optionId;
-	private String apName;
+	private String optionName;
 	private int price;
 	private int stock;
 	private int apId;
+	private int position;
 	
+
+
+
 	public OptionDTO() {}
 	
 	
-	public OptionDTO(String optionId, String apName, int price, int stock, int apId) {
+	public OptionDTO(String optionId, String apName, int price, int stock, int apId,int position) {
 		this.optionId = optionId;
-		this.apName = apName;
+		this.optionName = apName;
 		this.price = price;
 		this.stock = stock;
 		this.apId = apId;
+		this.position = position;
+	}
+	
+	public OptionDTO(String optionId, String apName, int price, int stock) {
+		this.optionId = optionId;
+		this.optionName = apName;
+		this.price = price;
+		this.stock = stock;
+
 	}
 
 
@@ -30,12 +43,12 @@ public class OptionDTO {
 
 
 	public String getApName() {
-		return apName;
+		return optionName;
 	}
 
 
 	public void setApName(String apName) {
-		this.apName = apName;
+		this.optionName = apName;
 	}
 
 
@@ -68,11 +81,19 @@ public class OptionDTO {
 		this.apId = apId;
 	}
 
+	public int getPosition() {
+		return position;
+	}
 
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
 	@Override
+	
+	//옵션1 제품명+ 제품코드 + 재고 + 가격
 	public String toString() {
-		return "OptionDTO [optionId=" + optionId + ", apName=" + apName + ", price=" + price + ", stock=" + stock
-				+ ", apId=" + apId + "]";
+		return "옵션" + position + " " + optionName + " " + optionId + " (" + price + "원)";
 	}
 	
 	

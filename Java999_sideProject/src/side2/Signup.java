@@ -256,7 +256,11 @@ public class Signup {
 		String email = textPhone.getText();
 
 		dao = MemberDAOImple.getInstance();
-
+		System.out.println("아이디 확인" + id);
+		System.out.println("비밀번호 확인" + pw);
+		System.out.println("이름" + name);
+		System.out.println("연락처 확인" + phone);
+		System.out.println("이메일 확인" + email);
 		dto = new MemberDTO(id, pw, name, phone, email);
 		int result = dao.insert(dto);
 		if (id.isBlank() || pwNull(pw) || name.isBlank() || phone.isBlank() || email.isBlank()) {

@@ -80,7 +80,7 @@ public class AppManage {
 				int idColumnIndex = table.getColumnModel().getColumnIndex("제품 ID");
 				clickedID = table.getModel().getValueAt(selectedRow, idColumnIndex).toString();
 				System.out.println("클릭인덱스: " + clickedID);
-
+				
 				int count = e.getClickCount();// 더블클릭시
 				if (count == 2) {
 					appUpdate();
@@ -150,8 +150,8 @@ public class AppManage {
 	public void appUpdate() {
 		dto = dao.appInfo(clickedID);
 
-		AppInsert appInsert = new AppInsert();
-		appInsert.addFrameCloseListener(new WindowAdapter() {
+		AppUpdate appUpdate = new AppUpdate(dto);
+		appUpdate.addFrameCloseListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				if (!selectOrSerch) {
@@ -161,7 +161,7 @@ public class AppManage {
 				}
 			}
 		});
-		appInsert.show();
+		appUpdate.show();
 	}// end appUpdate
 
 	public void tableOutput() {
@@ -179,14 +179,13 @@ public class AppManage {
 
 	@SuppressWarnings("serial")
 	private void updateTable(ArrayList<ApplianceDTO> list) {
-		String[] header = { "제품 ID", "제품명", "가격", "제조사", "재고" };
+		String[] header = { "제품 ID", "제품명", "제조사",};
 		Object[][] data = new Object[list.size()][header.length];
 		for (int i = 0; i < list.size(); i++) {
 			data[i][0] = list.get(i).getApID();
 			data[i][1] = list.get(i).getApName();
-//			data[i][2] = list.get(i).getApPrice();
-			data[i][3] = list.get(i).getApMfr();
-//			data[i][4] = list.get(i).getApStock();
+			data[i][2] = list.get(i).getApMfr();
+
 		}
 
 		DefaultTableModel tableModel = new DefaultTableModel(data, header) {

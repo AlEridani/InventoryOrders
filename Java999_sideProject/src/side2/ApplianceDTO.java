@@ -5,22 +5,39 @@ public class ApplianceDTO {
 	private String apName;
 	private String apMfr;
 	private String apInfo;
+	private int mainPrice;
 
 
 
 	public ApplianceDTO() {}
 
+	public ApplianceDTO(int apID, String apName, String apMfr, String apInfon, int mainPrice) {
+		this.apID = apID;
+		this.apName = apName;
+		this.apMfr = apMfr;
+		this.apInfo = apInfo;
+		this.mainPrice = mainPrice;
+	}
+	
 	public ApplianceDTO(int apID, String apName, String apMfr, String apInfo) {
 		this.apID = apID;
 		this.apName = apName;
 		this.apMfr = apMfr;
 		this.apInfo = apInfo;
+		
 	}
 	
 	public ApplianceDTO( String apName, String apMfr, String apInfo) {
 		this.apName = apName;
 		this.apMfr = apMfr;
 		this.apInfo = apInfo;
+	}
+	
+	public ApplianceDTO( String apName, String apMfr, String apInfo, int mainPrice) {
+		this.apName = apName;
+		this.apMfr = apMfr;
+		this.apInfo = apInfo;
+		this.mainPrice = mainPrice;
 	}
 
 	public int getApID() {
@@ -55,9 +72,19 @@ public class ApplianceDTO {
 	public void setApInfo(String apInfo) {
 		this.apInfo = apInfo;
 	}
+
+	public int getMainPrice() {
+		return mainPrice;
+	}
+
+	public void setMainPrice(int mainPrice) {
+		this.mainPrice = mainPrice;
+	}
+
 	@Override
 	public String toString() {
-		return "ApplianceDTO [apName=" + apName + ", apMfr=" + apMfr + ", apInfo=" + apInfo + "]";
+		return "ApplianceDTO [apID=" + apID + ", apName=" + apName + ", apMfr=" + apMfr + ", apInfo=" + apInfo
+				+ ", mainPrice=" + mainPrice + "]";
 	}
 
 

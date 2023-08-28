@@ -35,6 +35,8 @@ public class AppInsert {
 	private JTextField textField_7;
 	private JPanel panel;
 
+	private boolean insertToken = false;
+
 	private int clickedCount = 0;
 	private int y = -20;
 	private int HEIGHT = 20;
@@ -53,6 +55,8 @@ public class AppInsert {
 	private int TEXT_NAME_WIDTH = 200;
 	private int TEXT_PRICE_WIDTH = 120;
 	private int TEXT_STOCK_WIDTH = 100;
+	
+	
 	JScrollPane scrollPane_1;
 
 	List<JTextField> optionIdFields = new ArrayList<>();
@@ -154,8 +158,8 @@ public class AppInsert {
 		JButton btnNewButton_3 = new JButton("확인");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (allFieldsAreNotEmpty(tempOptionIdFields) && allFieldsAreNotEmpty(tempOptionNameFields)
-						&& allFieldsAreNotEmpty(tempPriceFields) && allFieldsAreNotEmpty(tempStockFields)) {
+				if (isFieldNotEmpty(tempOptionIdFields) && isFieldNotEmpty(tempOptionNameFields)
+						&& isFieldNotEmpty(tempPriceFields) && isFieldNotEmpty(tempStockFields)) {
 
 					optionIdFields.addAll(tempOptionIdFields);
 					optionNameFields.addAll(tempOptionNameFields);
@@ -171,6 +175,7 @@ public class AppInsert {
 					tempOptionNameFields.clear();
 					tempPriceFields.clear();
 					tempStockFields.clear();
+					insertToken = true;
 				} else {
 					JOptionPane.showMessageDialog(null, "모든 필드를 채워주세요.");
 				}
@@ -197,32 +202,43 @@ public class AppInsert {
 		String apInfo = textAppInfo.getText();
 		int apId = -1;
 		ApplianceDAO dao = ApplianceDAOImple.getInstance();
+
 		if (apInfo.isBlank()) {
 			apInfo = "상품 정보가 없습니다";
 		}
 
-		if (!apName.isBlank() || !apMfr.isBlank()) {
-			
+		// apName이 빈칸이 아니면서 mfr가 빈칸 이 아니면
+
+		// false false false
+		if ((apName.isBlank() || apMfr.isBlank())) {
+			JOptionPane.showMessageDialog(null, "제목과 제조사를 입력해 주세요");
+		} else if (insertToken == false) {
+			JOptionPane.showMessageDialog(null, "옵션칸을 입력해주세요");
+		} else {
 			ApplianceDTO dto = new ApplianceDTO(apName, apMfr, apInfo);
 			apId = dao.appInsert(dto);
-			//insert로 만든 apid를 밑에 넣어야됨
-		}
 		
+			for (int i = 0; i < clickedCount + 1; i++) {
+				
+				String optionId = optionIdFields.get(i).getText();
+				String optionName = optionNameFields.get(i).getText();
+				int price = Integer.parseInt(priceFields.get(i).getText());
+				int stock = Integer.parseInt(stockFields.get(i).getText());
+				
+				OptionDAO odao = OptionDAOImple.getInstance();
+				System.out.println("odto 확인 : " + optionId + optionName + price + stock);
+				OptionDTO odto = new OptionDTO(optionId, optionName, price, stock, apId, (i+1));
+				
+				int result = odao.insert(odto);
 
-		for(int i =0; i <clickedCount;i++) {
-			String optionId = optionIdFields.get(i).getText();
-			String optionName = optionNameFields.get(i).getText();
-			int price = Integer.parseInt(priceFields.get(i).getText());
-			int stock = Integer.parseInt(stockFields.get(i).getText());
-			
-			OptionDAO odao = OptionDAOImple.getInstance();
-			OptionDTO odto = new OptionDTO(optionId,optionName,price,stock,apId);
-			int result = odao.insert(odto);
-			
-			if(result == 1) {
-				System.out.println("입력 성공");
-			}else {
-				System.out.println("입력 실패");
+				if (result == 1) {
+					System.out.println("입력 성공");
+					JOptionPane.showMessageDialog(null, "등록에 성공했습니다");
+					frame.dispose();
+				} else {
+					System.out.println("입력 실패");
+					
+				}
 			}
 		}
 	}
@@ -270,6 +286,12 @@ public class AppInsert {
 			tempOptionNameFields.add(textOptionName);
 			tempPriceFields.add(textPrice);
 			tempStockFields.add(textStock);
+			
+			//추가버튼누르면 초기화
+			optionIdFields.clear();
+			optionNameFields.clear();
+			priceFields.clear();
+			stockFields.clear();
 
 			panel.setPreferredSize(new Dimension(950, y + HEIGHT + 10));
 			panel.repaint();
@@ -281,9 +303,9 @@ public class AppInsert {
 
 	}// end addOption
 
-	private boolean allFieldsAreNotEmpty(List<JTextField> fields) {
+	private boolean isFieldNotEmpty(List<JTextField> fields) {
 		for (JTextField field : fields) {
-			if (field.getText().trim().isEmpty()) {
+			if (field.getText().isBlank()) {
 				return false;
 			}
 		}
